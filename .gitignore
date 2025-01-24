@@ -24,4 +24,4 @@ dist-ssr
 *.sw?
 
 .vite/*
-.vite/_metadata.json
+.vite/deps/_metadata.json
