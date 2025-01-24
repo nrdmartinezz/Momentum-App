@@ -1,0 +1,28 @@
+
+.timer-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-text{
+    font-size: 124px;
+    font-family: "adrianna", sans-serif;
+}
+
+
+.timer-controls{
+    column-gap: 10px;
+    button{
+        font-family: "adrianna", sans-serif;
+        background-color: var(--global-color-purple);
+        color: var(--global-color-white);
+        border: none;
+        border-radius: 6px;
+        font-size: 18px;
+       
+        padding: 6px 24px;
+        cursor: pointer;
+    }
+}
