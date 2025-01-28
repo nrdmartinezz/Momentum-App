@@ -1,0 +1,20 @@
+{"tasks":[
+    {
+        "title": "Task 1",
+        "description": "This is the first task",
+        "dueDate": "2023-10-01",
+        "subTasks": ["Subtask 1.1", "Subtask 1.2"]
+    },
+    {
+        "title": "Task 2",
+        "description": "This is the second task",
+        "dueDate": "2023-10-02",
+        "subTasks": ["Subtask 2.1"]
+    },
+    {
+        "title": "Task 3",
+        "description": "This is the third task",
+        "dueDate": "2023-10-03",
+        "subTasks": []
+    }
+]}

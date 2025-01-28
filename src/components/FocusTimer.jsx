@@ -14,7 +14,7 @@ const FocusTimer = ({
   longBreakDuration,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState(workDuration * 60);
-  const [mode, setMode] = useState(true);
+  const [mode, setMode] = useState("WORK");
   const [isRunning, setIsRunning] = useState(false);
 
   const timerController = useMemo(

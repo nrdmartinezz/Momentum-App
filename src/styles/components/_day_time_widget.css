@@ -1,0 +1,15 @@
+.day-time-widget{
+    flex-direction: column;
+    max-width: 300px;  
+    max-height: fit-content;
+    color: var(--global-color-white);
+    padding: 12px;
+    .time-text{
+        font-size: 36px;
+    }
+    .date-text{
+       font-weight: 400;
+       font-size: 18px;
+        
+    }
+}

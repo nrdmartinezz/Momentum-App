@@ -3,18 +3,26 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  max-height: 270px;
+  max-width: 600px;
+  margin: 24px 24px;
+  align-self: flex-start;
+  justify-self: flex-end;
 }
 
+
 .timer-text {
-  font-size: 124px;
+  font-size: 148px;
+  color: var(--global-color-white);
   font-family: "adrianna", sans-serif;
+  margin-right: 12px;
 }
 
 .timer-controls {
   column-gap: 10px;
   .active-btn {
     font-family: "adrianna", sans-serif;
-    background-color: var(--global-color-purple);
+    background-color: var(--global-color-light-purple);
     color: var(--global-color-white);
     border: none;
     border-radius: 6px;
@@ -27,14 +35,16 @@
   .clear-btn {
     font-family: "adrianna", sans-serif;
     font-size: 18px;
-    border: 2px solid var(--global-color-purple);
+    border: 2px solid var(--global-color-white);
     border-radius: 5px;
     padding: 6px 24px;
     cursor: pointer;
+    background-color: transparent;
+    color: var(--global-color-white);
   }
-  .simple-controls{
+  .simple-controls {
     margin: auto;
-    border-radius:  100px;
+    border-radius: 100px;
     max-width: 45px;
     width: 45px;
     max-height: 45px;
@@ -43,7 +53,8 @@
     align-content: center;
     justify-content: center;
     font-size: 18px;
-    svg{
+    /* background-color: var(--global-color-purple); */
+    svg {
       margin: auto;
     }
   }
@@ -54,15 +65,15 @@
   row-gap: 12px;
   justify-content: center;
   align-content: center;
-  margin-left:12px;
+  margin-left: 12px;
   .interval-counter-dot {
     width: 25px;
     max-height: 25px;
     border-radius: 1000px;
-    border: 2px solid #000;
+    background-color: var(--global-color-white-lavendar);
   }
   .interval-counter-dot.interval-active {
-    background-color: var(--global-color-purple);
+    background-color: var(--global-color-light-purple);
     border: unset;
   }
 }

@@ -1,3 +1,10 @@
-div{
-    /* border: 1px solid #000; */
+.app-container{
+    min-width: 100vw;
+   min-height: 100vh;
+    background-image: url("../../assets/images/AdobeStock_609028832.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    flex-direction: column;
+    justify-content: space-between;
 }

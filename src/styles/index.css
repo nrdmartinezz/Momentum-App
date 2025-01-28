@@ -3,6 +3,8 @@
 @import "./base/_variables.css";
 
 @import "./components/_focus_timer.css";
+@import "./components/_day_time_widget.css";
+@import "./components/_task_list.css";
 
 @import "./layout/_default.css";
 

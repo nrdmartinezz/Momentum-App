@@ -1,0 +1,39 @@
+.task-list-container{
+    color:var(--global-color-white);
+    flex-direction: column;
+    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.26);
+    padding: 12px 24px;
+    min-height: 100vh;
+}
+
+.task-list{
+    position: fixed;
+    right: 0;
+    min-width: 250px;
+    transition: right 0.4s ease-in-out; /* Add transition for right property */
+}
+
+.task-card{
+    flex-direction: column;
+}
+
+.toggle-task-list{
+    max-width: fit-content;
+    color: var(--global-color-white);
+    padding: 64px 12px;
+    max-height: max-content;
+    background-color: var(--global-color-light-purple);
+    margin: auto;
+    border-radius: 10px 0px 0px 10px;
+    transition: .3s;
+    font-size: 24px;
+}
+
+
+.toggle-task-list.rotate-icon svg{
+    transform: rotate(180deg);
+}
+.hidden-task-list{
+    right:-218px
+}
