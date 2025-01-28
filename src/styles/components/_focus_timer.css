@@ -26,3 +26,25 @@
         cursor: pointer;
     }
 }
+
+.interval-counter-container{
+    flex-direction: column;
+    row-gap: 12px;
+    justify-content: center;
+    align-content: center;
+    .interval-counter-dot{
+        width:25px;
+        max-height: 25px;
+        border-radius: 1000px;
+        border: 2px solid #000;
+
+    }
+    .interval-counter-dot.interval-active{
+        background-color: var(--global-color-purple);
+        border: unset;
+    }
+}
+
+.timer-interval-container{
+    flex-direction: row;
+}

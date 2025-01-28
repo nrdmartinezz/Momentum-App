@@ -10,7 +10,7 @@ const FocusTimer = ({
   const [timeRemaining, setTimeRemaining] = useState(workDuration * 60);
   const [isWorkTime, setIsWorkTime] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
-  
+
   const [isShortBreak, setIsShortBreak] = useState(false);
   const [isLongBreak, setIsLongBreak] = useState(false);
 
@@ -36,7 +36,7 @@ const FocusTimer = ({
 
     return () => timerController.pauseTimer();
   }, [isRunning, timerController]);
- 
+
   const handleStartPause = () => {
     setIsRunning(!isRunning);
   };
@@ -60,7 +60,6 @@ const FocusTimer = ({
   };
 
   const handleStartShortBreak = () => {
-    
     setIsRunning(true);
     setIsWorkTime(false);
     timerController.startShortBreak((time, isWork) => {
@@ -68,7 +67,6 @@ const FocusTimer = ({
       setIsWorkTime(isWork);
     });
     setTimeRemaining(shortbreakDuration * 60);
-    
   };
 
   const handleStartLongBreak = () => {
@@ -81,9 +79,28 @@ const FocusTimer = ({
     setIsWorkTime(false);
   };
 
+  const handleInterval = ()=>{
+    let intervalDots = [];
+  
+    for (let index = 0; index < 4; index++) {
+      let interval = timerController.getShortCount();
+      if (index <= interval) {
+        intervalDots.push(
+          <div className="interval-counter-dot interval-active"></div>
+        );
+      } else {
+        intervalDots.push(<div className="interval-counter-dot"></div>);
+      }
+    }
+    return intervalDots;
+  }
+
   return (
     <div className="timer-container">
+      <div className="timer-interval-container">
       <h2 className="timer-text">{formatTime(timeRemaining)}</h2>
+      <div className="interval-counter-container">{handleInterval()}</div>
+      </div>
       <div className="timer-controls">
         <button
           className={isWorkTime ? "active-btn" : "clear-btn"}

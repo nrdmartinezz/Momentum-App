@@ -5,7 +5,7 @@ function App() {
 
   return (
     <>
-  <FocusTimer workDuration={25} shortbreakDuration={1} longBreakDuration={1} />
+  <FocusTimer workDuration={1} shortbreakDuration={1} longBreakDuration={15} />
     </>
   )
 }
