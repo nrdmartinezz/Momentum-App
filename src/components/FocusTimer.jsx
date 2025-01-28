@@ -1,6 +1,12 @@
 import { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import FocusTimerController from "../controllers/FocusTimerController";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faRotateRight,
+  faPause,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
 
 const FocusTimer = ({
   workDuration,
@@ -8,8 +14,9 @@ const FocusTimer = ({
   longBreakDuration,
 }) => {
   const [timeRemaining, setTimeRemaining] = useState(workDuration * 60);
-  const [isWorkTime, setIsWorkTime] = useState(true);
+  const [mode, setMode] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
+
 
   const timerController = useMemo(
     () =>
@@ -23,14 +30,13 @@ const FocusTimer = ({
 
   useEffect(() => {
     if (isRunning) {
-      timerController.startTimer((time, isWork) => {
+      timerController.startTimer((time, mode) => {
         setTimeRemaining(time);
-        setIsWorkTime(isWork);
+        setMode(mode);
       });
     } else {
       timerController.pauseTimer();
     }
-
     return () => timerController.pauseTimer();
   }, [isRunning, timerController]);
 
@@ -38,13 +44,23 @@ const FocusTimer = ({
     setIsRunning(!isRunning);
   };
 
-  const handleReset = () => {
-    timerController.resetTimer((time, isWork) => {
+  const handleWorkStart = () => {
+    setMode("WORK")
+    setTimeRemaining(workDuration * 60);
+    setIsRunning(false);
+    timerController.startWork((time, mode) => {
       setTimeRemaining(time);
-      setIsWorkTime(isWork);
+      setMode(mode);
+    });
+  };
+
+  const handleReset = () => {
+    timerController.resetTimer((time, mode) => {
+      setTimeRemaining(time);
+      setMode(mode);
     });
     setTimeRemaining(workDuration * 60);
-    setIsWorkTime(true);
+    setMode(mode);
     setIsRunning(false);
   };
 
@@ -55,23 +71,25 @@ const FocusTimer = ({
   };
 
   const handleStartShortBreak = () => {
-    setIsRunning(true);
-    setIsWorkTime(false);
-    timerController.startShortBreak((time, isWork) => {
-      setTimeRemaining(time);
-      setIsWorkTime(isWork);
-    });
+    setIsRunning(false);
+    setMode("SHORT");
+
     setTimeRemaining(shortbreakDuration * 60);
+    timerController.startShortBreak((time, mode) => {
+      setTimeRemaining(time);
+      setMode(mode);
+    });
   };
 
   const handleStartLongBreak = () => {
-    timerController.startLongBreak((time, isWork) => {
-      setTimeRemaining(time);
-      setIsWorkTime(isWork);
-    });
     setTimeRemaining(longBreakDuration * 60);
-    setIsRunning(true);
-    setIsWorkTime(false);
+    setIsRunning(false);
+    setMode("LONG");
+  
+    timerController.startLongBreak((time, mode) => {
+      setTimeRemaining(time);
+      setMode(mode);
+    });
   };
 
   const handleInterval = () => {
@@ -90,32 +108,29 @@ const FocusTimer = ({
     return intervalDots;
   };
 
-  
+  document.title = `${formatTime(timeRemaining)} - ${
+   mode==="WORK"? "Work" : "Break"
+  }`;
 
   return (
     <div className="timer-container">
       <div className="timer-interval-container">
         <h2 className="timer-text">{formatTime(timeRemaining)}</h2>
         <div className="interval-counter-container adrianna-regular">
-          {isWorkTime ? handleInterval() : "On Break"}
+          {handleInterval()}
         </div>
       </div>
       <div className="timer-controls">
         <button
-          className={isWorkTime ? "active-btn" : "clear-btn"}
-          onClick={handleStartPause}
+          className={mode ==="WORK" ? "active-btn" : "clear-btn"}
+          onClick={handleWorkStart}
         >
-          {isRunning ? "Pause" : "Start"}
+          Pomodoro
         </button>
-        <button
-          className={isWorkTime ? "active-btn" : "clear-btn"}
-          onClick={handleReset}
-        >
-          Reset
-        </button>
+
         <button
           className={
-            timerController.getShortCount() < 3 && !isWorkTime
+            mode === "SHORT"
               ? "active-btn"
               : "clear-btn"
           }
@@ -125,13 +140,28 @@ const FocusTimer = ({
         </button>
         <button
           className={
-            timerController.getShortCount() >= 3 && !isWorkTime
+            mode === "LONG"
               ? "active-btn"
               : "clear-btn"
           }
           onClick={handleStartLongBreak}
         >
           Long Break
+        </button>
+
+        <button className={"active-btn simple-controls"} onClick={handleReset}>
+          <FontAwesomeIcon icon={faRotateRight} />
+        </button>
+
+        <button
+          className={"active-btn simple-controls"}
+          onClick={handleStartPause}
+        >
+          {isRunning ? (
+            <FontAwesomeIcon icon={faPause} />
+          ) : (
+            <FontAwesomeIcon icon={faPlay} />
+          )}
         </button>
       </div>
     </div>

@@ -3,10 +3,10 @@ class FocusTimerController {
         this.workDuration = workDuration * 60; // convert minutes to seconds
         this.shortBreakDuration = shortBreakDuration * 60; // convert minutes to seconds
         this.longBreakDuration = longBreakDuration * 60; // convert minutes to seconds
-        this.isWorkTime = true;
         this.timeRemaining = this.workDuration;
         this.timer = null;
         this.shortCount = 0;
+        this.mode ="WORK"; // modes are "WORK" "SHORT" "LONG"
     }
 
     startTimer(callback) {
@@ -15,15 +15,25 @@ class FocusTimerController {
         this.timer = setInterval(() => {
             this.timeRemaining -= 1;
             if (this.timeRemaining <= 0 && this.shortCount < 3) {
-                this.isWorkTime = !this.isWorkTime;
-                this.timeRemaining = this.isWorkTime ? this.workDuration : this.shortBreakDuration;
-               if (this.isWorkTime) {this.shortCount++;}
+               if(this.mode === "WORK"){
+                this.mode = "SHORT";
+                this.timeRemaining = this.shortBreakDuration;
+                this.shortCount++;
+               }else if (this.mode=== "SHORT"){
+                this.mode = "WORK";
+                this.timeRemaining = this.workDuration;
+               }
             }else if(this.shortCount >= 3 && this.timeRemaining <= 0){
-                this.isWorkTime = !this.isWorkTime;
-                this.timeRemaining = this.isWorkTime ? this.workDuration : this.longBreakDuration;
-                this.shortCount = 0;
+                if(this.mode === "WORK"){
+                    this.mode = "LONG";
+                    this.timeRemaining = this.longBreakDuration;
+                }else if(this.mode ==="LONG"){
+                    this.mode = "WORK";
+                    this.timeRemaining = this.workDuration;
+                    this.shortCount = 0;
+                }
             }
-            callback(this.timeRemaining, this.isWorkTime);
+            callback(this.timeRemaining, this.mode);
         }, 1000);
     }
 
@@ -43,8 +53,8 @@ class FocusTimerController {
         return this.timeRemaining;
     }
 
-    isWorkPeriod() {
-        return this.isWorkTime;
+    getMode() {
+        return this.mode;
     }
 
     getShortCount(){
@@ -53,16 +63,23 @@ class FocusTimerController {
 
     startShortBreak(callback){
         this.pauseTimer();
-        this.isWorkTime = false;
+        this.mode = "SHORT";
         this.timeRemaining = this.shortBreakDuration;
-        this.startTimer(callback);
+        // this.startTimer(callback);
     }
 
     startLongBreak(callback){
         this.pauseTimer();
-        this.isWorkTime = false;
+        this.mode = "LONG";
         this.timeRemaining = this.longBreakDuration;
-        this.startTimer(callback);
+        // this.startTimer(callback);
+    }
+
+    startWork(callback){
+        this.pauseTimer();
+        this.mode = "WORK";
+        this.timeRemaining = this.workDuration;
+        // this.startTimer(callback);
     }
 }
 
