@@ -17,7 +17,6 @@ const FocusTimer = ({
   const [mode, setMode] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
 
-
   const timerController = useMemo(
     () =>
       new FocusTimerController(
@@ -44,52 +43,66 @@ const FocusTimer = ({
     setIsRunning(!isRunning);
   };
 
-  const handleWorkStart = () => {
-    setMode("WORK")
-    setTimeRemaining(workDuration * 60);
-    setIsRunning(false);
-    timerController.startWork((time, mode) => {
-      setTimeRemaining(time);
-      setMode(mode);
-    });
+  const handleModeChange = (newMode) => {
+    switch (newMode) {
+      case "SHORT":
+        setMode("SHORT");
+        setTimeRemaining(shortbreakDuration * 60);
+        setIsRunning(true);
+        timerController.startMode((time, mode)=>{
+          setTimeRemaining(time);
+          setMode(mode);
+        },"SHORT")
+        break;
+      case "LONG":
+        setMode("LONG");
+        setTimeRemaining(longBreakDuration * 60);
+        setIsRunning(true);
+        timerController.startMode((time, mode)=>{
+          setTimeRemaining(time);
+          setMode(mode);
+        },"LONG")
+        break;
+      case "WORK":
+        setMode("WORK");
+        setTimeRemaining(workDuration * 60);
+        setIsRunning(true);
+        timerController.startMode((time, mode)=>{
+          setTimeRemaining(time);
+          setMode(mode);
+        },"WORK")
+        break;
+    }
   };
 
   const handleReset = () => {
+    let curDuration = 0;
+
+    switch (mode) {
+      case "SHORT":
+        curDuration = shortbreakDuration;
+        break;
+      case "LONG":
+        curDuration = longBreakDuration;
+        break;
+      case "WORK":
+        curDuration = workDuration;
+        break;
+    }
+
+    setMode(mode);
+    setTimeRemaining(curDuration * 60);
+    setIsRunning(false);
     timerController.resetTimer((time, mode) => {
       setTimeRemaining(time);
       setMode(mode);
     });
-    setTimeRemaining(workDuration * 60);
-    setMode(mode);
-    setIsRunning(false);
   };
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${minutes}:${secs < 10 ? "0" : ""}${secs}`;
-  };
-
-  const handleStartShortBreak = () => {
-    setIsRunning(false);
-    setMode("SHORT");
-
-    setTimeRemaining(shortbreakDuration * 60);
-    timerController.startShortBreak((time, mode) => {
-      setTimeRemaining(time);
-      setMode(mode);
-    });
-  };
-
-  const handleStartLongBreak = () => {
-    setTimeRemaining(longBreakDuration * 60);
-    setIsRunning(false);
-    setMode("LONG");
-  
-    timerController.startLongBreak((time, mode) => {
-      setTimeRemaining(time);
-      setMode(mode);
-    });
   };
 
   const handleInterval = () => {
@@ -99,7 +112,10 @@ const FocusTimer = ({
       let interval = timerController.getShortCount();
       if (index <= interval) {
         intervalDots.push(
-          <div className="interval-counter-dot interval-active"></div>
+          <div
+            key={`${index}_interval_dot`}
+            className="interval-counter-dot interval-active"
+          ></div>
         );
       } else {
         intervalDots.push(<div className="interval-counter-dot"></div>);
@@ -109,7 +125,7 @@ const FocusTimer = ({
   };
 
   document.title = `${formatTime(timeRemaining)} - ${
-   mode==="WORK"? "Work" : "Break"
+    mode === "WORK" ? "Work" : "Break"
   }`;
 
   return (
@@ -122,29 +138,27 @@ const FocusTimer = ({
       </div>
       <div className="timer-controls">
         <button
-          className={mode ==="WORK" ? "active-btn" : "clear-btn"}
-          onClick={handleWorkStart}
+          className={mode === "WORK" ? "active-btn" : "clear-btn"}
+          onClick={() => {
+            handleModeChange("WORK");
+          }}
         >
           Pomodoro
         </button>
 
         <button
-          className={
-            mode === "SHORT"
-              ? "active-btn"
-              : "clear-btn"
-          }
-          onClick={handleStartShortBreak}
+          className={mode === "SHORT" ? "active-btn" : "clear-btn"}
+          onClick={() => {
+            handleModeChange("SHORT");
+          }}
         >
           Short Break
         </button>
         <button
-          className={
-            mode === "LONG"
-              ? "active-btn"
-              : "clear-btn"
-          }
-          onClick={handleStartLongBreak}
+          className={mode === "LONG" ? "active-btn" : "clear-btn"}
+          onClick={() => {
+            handleModeChange("LONG");
+          }}
         >
           Long Break
         </button>
