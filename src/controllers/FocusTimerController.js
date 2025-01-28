@@ -6,7 +6,7 @@ class FocusTimerController {
         this.isWorkTime = true;
         this.timeRemaining = this.workDuration;
         this.timer = null;
-        this.shortCount = 3;
+        this.shortCount = 0;
     }
 
     startTimer(callback) {
@@ -18,7 +18,7 @@ class FocusTimerController {
                 this.isWorkTime = !this.isWorkTime;
                 this.timeRemaining = this.isWorkTime ? this.workDuration : this.shortBreakDuration;
                if (this.isWorkTime) {this.shortCount++;}
-            }else if(this.shortCount >= 4){
+            }else if(this.shortCount >= 3 && this.timeRemaining <= 0){
                 this.isWorkTime = !this.isWorkTime;
                 this.timeRemaining = this.isWorkTime ? this.workDuration : this.longBreakDuration;
                 this.shortCount = 0;

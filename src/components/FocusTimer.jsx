@@ -11,9 +11,6 @@ const FocusTimer = ({
   const [isWorkTime, setIsWorkTime] = useState(true);
   const [isRunning, setIsRunning] = useState(false);
 
-  const [isShortBreak, setIsShortBreak] = useState(false);
-  const [isLongBreak, setIsLongBreak] = useState(false);
-
   const timerController = useMemo(
     () =>
       new FocusTimerController(
@@ -48,8 +45,6 @@ const FocusTimer = ({
     });
     setTimeRemaining(workDuration * 60);
     setIsWorkTime(true);
-    setIsLongBreak(false);
-    setIsShortBreak(false);
     setIsRunning(false);
   };
 
@@ -79,9 +74,9 @@ const FocusTimer = ({
     setIsWorkTime(false);
   };
 
-  const handleInterval = ()=>{
+  const handleInterval = () => {
     let intervalDots = [];
-  
+
     for (let index = 0; index < 4; index++) {
       let interval = timerController.getShortCount();
       if (index <= interval) {
@@ -93,13 +88,17 @@ const FocusTimer = ({
       }
     }
     return intervalDots;
-  }
+  };
+
+  
 
   return (
     <div className="timer-container">
       <div className="timer-interval-container">
-      <h2 className="timer-text">{formatTime(timeRemaining)}</h2>
-      <div className="interval-counter-container">{handleInterval()}</div>
+        <h2 className="timer-text">{formatTime(timeRemaining)}</h2>
+        <div className="interval-counter-container adrianna-regular">
+          {isWorkTime ? handleInterval() : "On Break"}
+        </div>
       </div>
       <div className="timer-controls">
         <button
@@ -115,13 +114,21 @@ const FocusTimer = ({
           Reset
         </button>
         <button
-          className={isShortBreak ? "active-btn" : "clear-btn"}
+          className={
+            timerController.getShortCount() < 3 && !isWorkTime
+              ? "active-btn"
+              : "clear-btn"
+          }
           onClick={handleStartShortBreak}
         >
           Short Break
         </button>
         <button
-          className={isLongBreak ? "active-btn" : "clear-btn"}
+          className={
+            timerController.getShortCount() >= 3 && !isWorkTime
+              ? "active-btn"
+              : "clear-btn"
+          }
           onClick={handleStartLongBreak}
         >
           Long Break
