@@ -5,14 +5,27 @@
     background-color: rgba(0, 0, 0, 0.26);
     padding: 12px 24px;
     min-height: 100vh;
+    overflow-y: auto;
+    row-gap: 36px;
+    h2{
+        margin-bottom:-12px;
+    }
+}
+
+.task-list-container::-webkit-scrollbar{
+    display: none;
 }
 
 .task-list{
     position: fixed;
     right: 0;
-    min-width: 250px;
+    top: 0;
+    max-width: 350px;
+    max-height: 100vh;
     transition: right 0.4s ease-in-out; /* Add transition for right property */
 }
+
+
 
 .task-card{
     flex-direction: column;
@@ -31,9 +44,29 @@
 }
 
 
+.task-card-group{
+    flex-direction: column;
+    row-gap: 12px;
+}
+
 .toggle-task-list.rotate-icon svg{
     transform: rotate(180deg);
 }
 .hidden-task-list{
-    right:-218px
+    right:-245px
+}
+
+.task-card{
+    max-height: fit-content;
+    color: var(--global-color-slate);
+    padding: 12px;
+    padding-bottom: 24px;
+    border-radius: 6px;
+    background-color: var(--global-color-white);
+}
+
+.task-selected{
+    max-width: 200px;
+    padding: 12px 12px 24px;
+    background-color: var(--global-color-lavendar);
 }
