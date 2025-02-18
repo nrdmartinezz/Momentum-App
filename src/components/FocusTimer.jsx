@@ -13,7 +13,7 @@ const FocusTimer = ({
   shortbreakDuration,
   longBreakDuration,
 }) => {
-  const [timeRemaining, setTimeRemaining] = useState(workDuration * 60);
+  const [timeRemaining, setTimeRemaining] = useState(workDuration);
   const [mode, setMode] = useState("WORK");
   const [isRunning, setIsRunning] = useState(false);
 
@@ -44,35 +44,13 @@ const FocusTimer = ({
   };
 
   const handleModeChange = (newMode) => {
-    switch (newMode) {
-      case "SHORT":
-        setMode("SHORT");
-        setTimeRemaining(shortbreakDuration * 60);
-        setIsRunning(true);
-        timerController.startMode((time, mode)=>{
-          setTimeRemaining(time);
-          setMode(mode);
-        },"SHORT")
-        break;
-      case "LONG":
-        setMode("LONG");
-        setTimeRemaining(longBreakDuration * 60);
-        setIsRunning(true);
-        timerController.startMode((time, mode)=>{
-          setTimeRemaining(time);
-          setMode(mode);
-        },"LONG")
-        break;
-      case "WORK":
-        setMode("WORK");
-        setTimeRemaining(workDuration * 60);
-        setIsRunning(true);
-        timerController.startMode((time, mode)=>{
-          setTimeRemaining(time);
-          setMode(mode);
-        },"WORK")
-        break;
-    }
+    setMode(newMode);
+    setIsRunning(false);
+    timerController.startMode((time, mode) => {
+      setTimeRemaining(time);
+      setMode(mode);
+    }, newMode);
+    timerController.pauseTimer();
   };
 
   const handleReset = () => {
@@ -90,8 +68,7 @@ const FocusTimer = ({
         break;
     }
 
-    setMode(mode);
-    setTimeRemaining(curDuration * 60);
+    setTimeRemaining(curDuration);
     setIsRunning(false);
     timerController.resetTimer((time, mode) => {
       setTimeRemaining(time);
@@ -140,6 +117,7 @@ const FocusTimer = ({
         <button
           className={mode === "WORK" ? "active-btn" : "clear-btn"}
           onClick={() => {
+            setTimeRemaining(workDuration);
             handleModeChange("WORK");
           }}
         >
@@ -149,6 +127,7 @@ const FocusTimer = ({
         <button
           className={mode === "SHORT" ? "active-btn" : "clear-btn"}
           onClick={() => {
+            setTimeRemaining(shortbreakDuration);
             handleModeChange("SHORT");
           }}
         >
@@ -157,6 +136,7 @@ const FocusTimer = ({
         <button
           className={mode === "LONG" ? "active-btn" : "clear-btn"}
           onClick={() => {
+            setTimeRemaining(longBreakDuration);
             handleModeChange("LONG");
           }}
         >
