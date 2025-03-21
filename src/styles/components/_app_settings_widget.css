@@ -1,0 +1,125 @@
+.app-settings-widget {
+  position: fixed;
+  top: 25px;
+  right: 64px;
+  z-index: 5;
+  transition: 0.5s;
+  button {
+    background-color: var(--global-color-light-purple);
+    border: unset;
+    border-radius: 1000px;
+    color: var(--global-color-white);
+    padding: 6px 12px;
+  }
+}
+
+.app-settings-widget.push {
+  right: 300px;
+  transition: 0.4s;
+}
+
+.app-settings-container {
+  position: fixed;
+  top: 0;
+  right: -45vw;
+  height: 100vh;
+  width: 45vw;
+  background-color: var(--global-color-transparent-black);
+  color: var(--global-color-white);
+  z-index: 100;
+  transition: 0.4s;
+  flex-direction: column;
+  padding: 14px;
+}
+
+.app-settings-container.settings-visible {
+  right: 0px;
+  transition: 0.4s;
+}
+.app-settings-close {
+  color: var(--global-color-white);
+  font-size: 32px;
+  max-height: 32px;
+}
+.app-settings-options-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.app-settings-menu {
+  padding-top: 12px;
+  padding-right: 64px;
+  flex-direction: column;
+  text-transform: capitalize;
+  font-size: 18px;
+  max-height: max-content;
+  max-width: 25%;
+  row-gap: 12px;
+  .settings-menu-item{
+    cursor: pointer;
+    transition: 0.2s;
+    border-bottom: 2px solid rgba(0, 0, 0, 0);
+  }
+.active-settings-menu-item{
+  cursor: pointer;
+  border-bottom: 2px solid var(--global-color-light-purple);
+}
+}
+
+.app-settings-view {
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.timer-settings-container {
+  flex-direction: column;
+  overflow-y: auto;
+  div {
+    flex-direction: column;
+    max-height: max-content;
+  }
+}
+
+.timer-settings-input {
+  label {
+    font-size: 16px;
+    margin-bottom: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+  input {
+    background-color: var(--global-color-transparent-white);
+    border: unset;
+    border-bottom: 1px solid var(--global-color-light-purple);
+    /* border-radius: 4px; */
+    color: var(--global-color-white);
+    padding: 6px 12px;
+    margin-bottom: 8px;
+    max-width: 50%;
+  }
+  /* Hide the default step arrows */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield; /* Hide the step arrows in Firefox */
+}
+
+/* Custom styling for the number input */
+input[type="number"] {
+  background-color: var(--global-color-transparent-white);
+  border: unset;
+  border-bottom: 1px solid var(--global-color-light-purple);
+  color: var(--global-color-white);
+  padding: 6px 12px;
+  margin-bottom: 8px;
+  max-width: 50%;
+}
+}
+
+.app-settings-view-title{
+  margin-bottom: 24px;
+}

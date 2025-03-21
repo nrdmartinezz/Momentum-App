@@ -2,10 +2,10 @@ import alarmSound from "../assets/sounds/soymilk.mp3";
 
 class FocusTimerController {
   constructor(workDuration, shortBreakDuration, longBreakDuration) {
-    this.workDuration = workDuration; // convert minutes to seconds
-    this.shortBreakDuration = shortBreakDuration; // convert minutes to seconds
-    this.longBreakDuration = longBreakDuration; // convert minutes to seconds
-    this.timeRemaining = this.workDuration;
+    this.workDuration = workDuration * 60; // convert minutes to seconds
+    this.shortBreakDuration = shortBreakDuration *60 ; // convert minutes to seconds
+    this.longBreakDuration = longBreakDuration *60; // convert minutes to seconds
+    this.timeRemaining = this.workDuration ;
     this.timer = null;
     this.shortCount = 0;
     this.mode = "WORK"; // modes are "WORK" "SHORT" "LONG"
@@ -40,6 +40,9 @@ class FocusTimerController {
           this.mode = "WORK";
           this.timeRemaining = this.workDuration;
           this.shortCount = 0;
+        } else if (this.mode === "SHORT") {
+          this.mode = "WORK";
+          this.timeRemaining = this.workDuration;
         }
       }
       callback(this.timeRemaining, this.mode);

@@ -1,18 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useContext } from "react";
 import PropTypes from "prop-types";
 import FocusTimerController from "../controllers/FocusTimerController";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faRotateRight,
-  faPause,
-  faPlay,
-} from "@fortawesome/free-solid-svg-icons";
+import { faRotateRight, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { TimerContext } from '../context/TimerContext';
 
-const FocusTimer = ({
-  workDuration,
-  shortbreakDuration,
-  longBreakDuration,
-}) => {
+const FocusTimer = () => {
+  const { workDuration, shortBreakDuration, longBreakDuration } = useContext(TimerContext);
   const [timeRemaining, setTimeRemaining] = useState(workDuration);
   const [mode, setMode] = useState("WORK");
   const [isRunning, setIsRunning] = useState(false);
@@ -21,10 +15,10 @@ const FocusTimer = ({
     () =>
       new FocusTimerController(
         workDuration,
-        shortbreakDuration,
+        shortBreakDuration,
         longBreakDuration
       ),
-    [workDuration, shortbreakDuration, longBreakDuration]
+    [workDuration, shortBreakDuration, longBreakDuration]
   );
 
   useEffect(() => {
@@ -58,7 +52,7 @@ const FocusTimer = ({
 
     switch (mode) {
       case "SHORT":
-        curDuration = shortbreakDuration;
+        curDuration = shortBreakDuration;
         break;
       case "LONG":
         curDuration = longBreakDuration;
@@ -95,7 +89,7 @@ const FocusTimer = ({
           ></div>
         );
       } else {
-        intervalDots.push(<div className="interval-counter-dot"></div>);
+        intervalDots.push(<div key={`${index}_interval_dot`} className="interval-counter-dot"></div>);
       }
     }
     return intervalDots;
@@ -127,7 +121,7 @@ const FocusTimer = ({
         <button
           className={mode === "SHORT" ? "active-btn" : "clear-btn"}
           onClick={() => {
-            setTimeRemaining(shortbreakDuration);
+            setTimeRemaining(shortBreakDuration);
             handleModeChange("SHORT");
           }}
         >

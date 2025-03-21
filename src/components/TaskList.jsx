@@ -5,7 +5,7 @@ import { faCaretLeft } from "@fortawesome/free-solid-svg-icons";
 import TaskCard from "./TaskCard";
 import TaskListController from "../controllers/TaskListController";
 
-const TaskList = ({ tasks, setCurrentTask, currentTask }) => {
+const TaskList = ({ tasks, setCurrentTask, currentTask, onTaskListToggle}) => {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(currentTask);
 
@@ -13,6 +13,7 @@ const TaskList = ({ tasks, setCurrentTask, currentTask }) => {
 
   const ToggleTaskList = () => {
     setIsVisible(!isVisible);
+    onTaskListToggle();
   };
 
   const groupedTasks = controller.groupTasksByDate();
@@ -68,6 +69,7 @@ TaskList.propTypes = {
     dueDate: PropTypes.string.isRequired,
     subTasks: PropTypes.arrayOf(PropTypes.string),
   }),
+  onTaskListToggle: PropTypes.func.isRequired,
 };
 
 export default TaskList;
