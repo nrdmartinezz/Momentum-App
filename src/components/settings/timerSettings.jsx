@@ -1,6 +1,6 @@
-import { useContext } from 'react';
-import PropTypes from 'prop-types';
-import { TimerContext } from '../../context/TimerContext';
+import { useContext } from "react";
+import PropTypes from "prop-types";
+import { TimerContext } from "../../context/TimerContext";
 
 const TimerSettings = () => {
   const {
@@ -10,42 +10,57 @@ const TimerSettings = () => {
     setShortBreakDuration,
     longBreakDuration,
     setLongBreakDuration,
+    setTimeRemaining,
+    mode,
   } = useContext(TimerContext);
 
   return (
-    <div className='timer-settings-container adrianna-regular'>
-      <h2 className='app-settings-view-title'>Timer Settings</h2>
-      <div className='timer-settings-input'>
+    <div className="timer-settings-container adrianna-regular">
+      <h2 className="app-settings-view-title">Timer Settings</h2>
+      <div className="timer-settings-input">
         <label>
           Work Duration (minutes):
           <input
             type="number"
-            value={workDuration}
+            value={workDuration / 60}
             step={1}
             min={1}
-            onChange={(e) => setWorkDuration(parseInt(e.target.value, 10))}
+            onChange={(e) => {
+              setWorkDuration(parseInt(e.target.value * 60, 10));
+              if (mode === "work")
+                setTimeRemaining(parseInt(e.target.value * 60, 10));
+            }}
           />
         </label>
       </div>
-      <div className='timer-settings-input'>
+      <div className="timer-settings-input">
         <label>
           Short Break Duration (minutes):
           <input
             type="number"
-            value={shortBreakDuration}
+            value={shortBreakDuration / 60}
             step={1}
-            onChange={(e) => setShortBreakDuration(parseInt(e.target.value, 10))}
+            onChange={(e) =>{
+              setShortBreakDuration(parseInt(e.target.value * 60, 10));
+              if (mode === "short")
+                setTimeRemaining(parseInt(e.target.value * 60, 10));
+              }
+            }
           />
         </label>
       </div>
-      <div className='timer-settings-input'>
+      <div className="timer-settings-input">
         <label>
           Long Break Duration (minutes):
           <input
             type="number"
-            value={longBreakDuration}
+            value={longBreakDuration / 60}
             step={1}
-            onChange={(e) => setLongBreakDuration(parseInt(e.target.value, 10))}
+            onChange={(e) =>{
+              setLongBreakDuration(parseInt(e.target.value * 60, 10));
+              if (mode === "long")
+                setTimeRemaining(parseInt(e.target.value * 60, 10));
+            }}
           />
         </label>
       </div>

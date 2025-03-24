@@ -2,13 +2,24 @@ import { useState, useEffect, useMemo, useContext } from "react";
 import PropTypes from "prop-types";
 import FocusTimerController from "../controllers/FocusTimerController";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faRotateRight, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
-import { TimerContext } from '../context/TimerContext';
+import {
+  faRotateRight,
+  faPause,
+  faPlay,
+} from "@fortawesome/free-solid-svg-icons";
+import { TimerContext } from "../context/TimerContext";
 
 const FocusTimer = () => {
-  const { workDuration, shortBreakDuration, longBreakDuration } = useContext(TimerContext);
-  const [timeRemaining, setTimeRemaining] = useState(workDuration);
-  const [mode, setMode] = useState("WORK");
+  const {
+    workDuration,
+    shortBreakDuration,
+    longBreakDuration,
+    timeRemaining,
+    mode,
+    setTimeRemaining,
+    setMode
+  } = useContext(TimerContext);
+
   const [isRunning, setIsRunning] = useState(false);
 
   const timerController = useMemo(
@@ -89,7 +100,12 @@ const FocusTimer = () => {
           ></div>
         );
       } else {
-        intervalDots.push(<div key={`${index}_interval_dot`} className="interval-counter-dot"></div>);
+        intervalDots.push(
+          <div
+            key={`${index}_interval_dot`}
+            className="interval-counter-dot"
+          ></div>
+        );
       }
     }
     return intervalDots;
