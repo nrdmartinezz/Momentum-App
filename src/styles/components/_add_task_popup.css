@@ -1,0 +1,90 @@
+.create-task-popup {
+  position: fixed;
+  flex-direction: column;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--global-color-slate);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  min-width: 450px;
+  max-width: 450px;
+}
+
+.popup-content {
+    flex-direction: column;
+  h2 {
+    margin-bottom: 20px;
+    color: var(--global-color-white);
+  }
+}
+
+.form-group {
+  margin-bottom: 15px;
+  flex-direction: column;
+  label{
+    font-family: "adrianna", sans-serif;
+    color: var(--global-color-white);
+  }
+  input{
+    font-family: "adrianna", sans-serif;
+    background-color: unset;
+    color: var(--global-color-white);
+    border: none;
+    border-radius: 0px;
+    border-bottom: 2px solid var(--global-color-light-purple);
+  }
+  textarea{
+    font-family: "adrianna", sans-serif;
+    background-color: unset;
+    color: var(--global-color-white);
+    resize: vertical;
+    min-height: 80px;
+    border: 2px solid var(--global-color-light-purple);
+  };
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 8px;
+  /* border-radius: 4px; */
+}
+
+.popup-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.add-task-btn,
+.cancel-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-task-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.popup-shown {
+  display: flex;
+}
+
+.popup-hidden {
+  display: none;
+}

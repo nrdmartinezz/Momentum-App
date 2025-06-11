@@ -5,9 +5,11 @@
     background-color: rgba(0, 0, 0, 0.26);
     padding: 12px 24px;
     min-height: 100vh;
+    min-width: 300px;
     overflow-y: auto;
     row-gap: 36px;
     z-index: 100;
+    justify-content: flex-start;
     h2{
         margin-bottom:-12px;
     }
@@ -22,15 +24,48 @@
     right: 0;
     top: 0;
     max-width: 350px;
+    min-width: 280px;
     max-height: 100vh;
     transition: right 0.4s ease-in-out; /* Add transition for right property */
 }
 
+.task-list-controls{
+    .simple-controls {
+        margin: auto;
+        border-radius: 100px;
+        border:none;
+        max-width: 45px;
+        width: 45px;
+        max-height: 45px;
+        height: 45px;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        font-size: 18px;
+        background-color: var(--global-color-light-purple);
+        svg {
+          margin: auto;
+          color: var(--global-color-white);
+        }
+      }
+}
 
+.task-list-header{
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 12px 0px;
+    margin-bottom: 12px;
+    max-height: fit-content;
+}
 
 .task-card{
     flex-direction: column;
 }
+.focus-task{
+    max-width: max-content;
+}
+
 
 .toggle-task-list{
     max-width: fit-content;
@@ -48,13 +83,45 @@
 .task-card-group{
     flex-direction: column;
     row-gap: 12px;
+    max-height: max-content;
+    max-width: 250px;
+}
+
+.task-card-header{
+    justify-content: space-between;
+    h4{
+        font-size: 21px;
+    }
+    .simple-controls{
+        margin: 0px;
+        border-radius: 100px;
+        border:none;
+        max-width: 30px;
+        width: 30px;
+        max-height: 30px;
+        height: 30px;
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        svg {
+          margin: auto;
+          color: var(--global-color-purple);
+          font-size: 14px;
+        }
+    }
+}
+
+.task-card-content{
+    flex-direction: column;
+    row-gap: 6px;
+    margin-top: 6px;
 }
 
 .toggle-task-list.rotate-icon svg{
     transform: rotate(180deg);
 }
 .hidden-task-list{
-    right:-245px
+    right:-300px
 }
 
 .task-card{
@@ -67,7 +134,7 @@
 }
 
 .task-selected{
-    max-width: 200px;
+    /* max-width: 200px; */
     padding: 12px 12px 24px;
     background-color: var(--global-color-lavendar);
 }

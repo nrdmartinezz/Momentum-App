@@ -1,14 +1,12 @@
 import DayTimeWidget from "../components/DayTimeWidget";
 import FocusTimer from "../components/FocusTimer";
-import Tasks from "../assets/data/tasks.json";
 import TaskList from "../components/TaskList";
-import TaskCard from "../components/TaskCard";
 import { useEffect, useState } from "react";
 import AppSettingsWidget from "../components/AppSettingsWidget";
-import {TimerProvider} from "../context/TimerContext";
+import { TimerProvider } from "../context/TimerContext";
+import { TaskProvider } from "../context/TaskContext";
 
 function App() {
-  const [currentTask, setCurrentTask] = useState(null);
   const [user, setUser] = useState(null);
   const [isTaskListOpen, setIsTaskListOpen] = useState(false);
 
@@ -22,21 +20,16 @@ function App() {
 
   return (
     <TimerProvider>
-      <div className="app-container">
-        <DayTimeWidget></DayTimeWidget>
-        {currentTask ? (
-          <TaskCard isSelected task={currentTask}></TaskCard>
-        ) : null}
-        <TaskList
-          currentTask={currentTask}
-          setCurrentTask={setCurrentTask}
-          tasks={Tasks.tasks}
-          onTaskListToggle={onTaskListToggle}
-        ></TaskList>
-        <FocusTimer
-        />
-        <AppSettingsWidget isTaskListOpen={isTaskListOpen}> </AppSettingsWidget>
-      </div>
+      <TaskProvider>
+        <div className="app-container">
+          <DayTimeWidget></DayTimeWidget>
+          <TaskList onTaskListToggle={onTaskListToggle}></TaskList>
+          <FocusTimer />
+          <AppSettingsWidget isTaskListOpen={isTaskListOpen}>
+            {" "}
+          </AppSettingsWidget>
+        </div>
+      </TaskProvider>
     </TimerProvider>
   );
 }
