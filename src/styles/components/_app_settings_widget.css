@@ -5,7 +5,7 @@
   z-index: 5;
   transition: 0.5s;
   button {
-    background-color: var(--global-color-light-purple);
+    background-color: var(--global-color-accent);
     border: unset;
     border-radius: 1000px;
     color: var(--global-color-white);
@@ -62,7 +62,7 @@
   }
 .active-settings-menu-item{
   cursor: pointer;
-  border-bottom: 2px solid var(--global-color-light-purple);
+  border-bottom: 2px solid var(--global-color-accent);
 }
 }
 
@@ -90,7 +90,7 @@
   input {
     background-color: var(--global-color-transparent-white);
     border: unset;
-    border-bottom: 1px solid var(--global-color-light-purple);
+    border-bottom: 1px solid var(--global-color-accent);
     /* border-radius: 4px; */
     color: var(--global-color-white);
     padding: 6px 12px;
@@ -112,7 +112,7 @@ input[type="number"] {
 input[type="number"] {
   background-color: var(--global-color-transparent-white);
   border: unset;
-  border-bottom: 1px solid var(--global-color-light-purple);
+  border-bottom: 1px solid var(--global-color-accent);
   color: var(--global-color-white);
   padding: 6px 12px;
   margin-bottom: 8px;

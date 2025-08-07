@@ -7,7 +7,9 @@
 @import "./components/_task_list.css";
 @import "./components/_app_settings_widget.css";
 @import "./components/_add_task_popup.css";
+@import "./components/_profile_settings_widget.css";
 
 @import "./layout/_default.css";
+@import "./layout/_mobile.css";
 
 @import "./pages/_app.css";

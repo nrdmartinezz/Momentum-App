@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import TimerSettings from "./settings/timerSettings";
+import ProfileSettings from "./settings/ProfileSettings";
 
 const AppSettingsWidget = ({ isTaskListOpen }) => {
   const [appSettingsVisible, setAppSettingsVisible] = useState(false);
@@ -46,30 +47,6 @@ const AppSettingsWidget = ({ isTaskListOpen }) => {
         </div>
         <div
           className={
-            appSettingsView === "tasks"
-              ? "active-settings-menu-item"
-              : "settings-menu-item"
-          }
-          onClick={() => {
-            handleViewChange("tasks");
-          }}
-        >
-          Tasks
-        </div>
-        <div
-          className={
-            appSettingsView === "notifications"
-              ? "active-settings-menu-item"
-              : "settings-menu-item"
-          }
-          onClick={() => {
-            handleViewChange("notifications");
-          }}
-        >
-          Notifications
-        </div>
-        <div
-          className={
             appSettingsView === "about"
               ? "active-settings-menu-item"
               : "settings-menu-item"
@@ -90,11 +67,7 @@ const AppSettingsWidget = ({ isTaskListOpen }) => {
       case "timer":
         return <TimerSettings />;
       case "profile":
-        return <div>Profile Settings</div>;
-      case "tasks":
-        return <div>Task Settings</div>;
-      case "notifications":
-        return <div>Notification Settings</div>;
+        return <ProfileSettings />;
       case "about":
         return <div>About</div>;
       default:

@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretLeft, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import TaskCard from "./TaskCard";
 import CreateTask from "./popups/CreateTask";
-// import TaskListController from "../controllers/TaskListController";
 import { TaskContext } from "../context/TaskContext";
 
 const TaskList = ({ onTaskListToggle }) => {
@@ -15,8 +14,6 @@ const TaskList = ({ onTaskListToggle }) => {
   const [createTaskPopupVisible, setCreateTaskPopupVisible] = useState(false);
 
   const groupedTasks = organizeTasks(tasklist);
-
-  console.log("Grouped Tasks:", groupedTasks);
 
   const ToggleTaskList = () => {
     setIsVisible(!isVisible);

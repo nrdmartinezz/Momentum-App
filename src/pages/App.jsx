@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import AppSettingsWidget from "../components/AppSettingsWidget";
 import { TimerProvider } from "../context/TimerContext";
 import { TaskProvider } from "../context/TaskContext";
+import { ProfileProvider } from "../context/ProfileContext";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -19,18 +20,20 @@ function App() {
   };
 
   return (
-    <TimerProvider>
-      <TaskProvider>
-        <div className="app-container">
-          <DayTimeWidget></DayTimeWidget>
-          <TaskList onTaskListToggle={onTaskListToggle}></TaskList>
-          <FocusTimer />
-          <AppSettingsWidget isTaskListOpen={isTaskListOpen}>
-            {" "}
-          </AppSettingsWidget>
-        </div>
-      </TaskProvider>
-    </TimerProvider>
+    <ProfileProvider>
+      <TimerProvider>
+        <TaskProvider>
+          <div className="app-container">
+            <DayTimeWidget></DayTimeWidget>
+            <TaskList onTaskListToggle={onTaskListToggle}></TaskList>
+            <FocusTimer />
+            <AppSettingsWidget
+              isTaskListOpen={isTaskListOpen}
+            ></AppSettingsWidget>
+          </div>
+        </TaskProvider>
+      </TimerProvider>
+    </ProfileProvider>
   );
 }
 

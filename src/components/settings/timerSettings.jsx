@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import PropTypes from "prop-types";
 import { TimerContext } from "../../context/TimerContext";
 
 const TimerSettings = () => {
@@ -66,15 +65,6 @@ const TimerSettings = () => {
       </div>
     </div>
   );
-};
-
-TimerSettings.propTypes = {
-  workDuration: PropTypes.number.isRequired,
-  setWorkDuration: PropTypes.func.isRequired,
-  shortBreakDuration: PropTypes.number.isRequired,
-  setShortBreakDuration: PropTypes.func.isRequired,
-  longBreakDuration: PropTypes.number.isRequired,
-  setLongBreakDuration: PropTypes.func.isRequired,
 };
 
 export default TimerSettings;

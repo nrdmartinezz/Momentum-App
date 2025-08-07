@@ -1,7 +1,7 @@
 .app-container{
     min-width: 100vw;
    min-height: 100vh;
-    background-image: url("../../assets/images/AdobeStock_609028832.jpeg");
+    background-image: var(--background-image);
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;

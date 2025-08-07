@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, useContext } from "react";
-import PropTypes from "prop-types";
 import FocusTimerController from "../controllers/FocusTimerController";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -172,10 +171,5 @@ const FocusTimer = () => {
   );
 };
 
-FocusTimer.propTypes = {
-  workDuration: PropTypes.number.isRequired,
-  shortbreakDuration: PropTypes.number.isRequired,
-  longBreakDuration: PropTypes.number.isRequired,
-};
 
 export default FocusTimer;

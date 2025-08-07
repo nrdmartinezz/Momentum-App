@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import TaskListController from "../controllers/TaskListController";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faTrashCan } from "@fortawesome/free-solid-svg-icons";
+import { faTrashCan } from "@fortawesome/free-solid-svg-icons";
 
 let TaskCard = ({ task, isSelected, onSelect, removeTask }) => {
   const controller = new TaskListController(task);
@@ -10,7 +10,7 @@ let TaskCard = ({ task, isSelected, onSelect, removeTask }) => {
 
   return (
     <div
-      // onClick={onSelect}
+      onClick={onSelect}
       className={"task-card " + selectedClass + " adrianna-regular"}
     >
       <div className="task-card-header">
@@ -19,7 +19,9 @@ let TaskCard = ({ task, isSelected, onSelect, removeTask }) => {
         {removeTask ? (
           <button
             className="simple-controls active-btn"
-            onClick={() => {
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
               removeTask(task.id);
               if (isSelected) onSelect();
             }}
@@ -28,7 +30,7 @@ let TaskCard = ({ task, isSelected, onSelect, removeTask }) => {
           </button>
         ) : null}
       </div>
-      <div className="task-card-content" onClick={onSelect}>
+      <div className="task-card-content">
         {task.description && <p>{task.description}</p>}
         {task.dueDate && (
           <p>

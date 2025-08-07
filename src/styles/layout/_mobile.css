@@ -1,0 +1,27 @@
+@media (max-width: 768px) {
+  .app-settings-container.settings-visible {
+    min-width: 100%;
+    display: flex;
+    right: 0px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+  }
+
+  .timer-text {
+    font-size: 100px;
+    color: var(--global-color-white);
+    font-family: "adrianna", sans-serif;
+    margin-right: 12px;
+  }
+
+  .timer-controls{
+    .active-btn{
+        font-size:16px;
+        padding: 6px 16px;
+    }
+  }
+  .task-list{
+    z-index: 1000;
+  }
+}

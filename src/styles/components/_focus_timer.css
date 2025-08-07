@@ -20,14 +20,14 @@
 
 .timer-controls {
   column-gap: 10px;
+
   .active-btn {
     font-family: "adrianna", sans-serif;
-    background-color: var(--global-color-light-purple);
+    background-color: var(--global-color-accent);
     color: var(--global-color-white);
     border: none;
     border-radius: 6px;
     font-size: 18px;
-
     padding: 6px 24px;
     cursor: pointer;
   }
@@ -74,7 +74,7 @@
     background-color: var(--global-color-white-lavendar);
   }
   .interval-counter-dot.interval-active {
-    background-color: var(--global-color-light-purple);
+    background-color: var(--global-color-accent);
     border: unset;
   }
 }

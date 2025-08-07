@@ -1,0 +1,21 @@
+.profile-settings-container {
+    width: 100%;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    h2{
+        margin-bottom: 32px;
+    }
+}
+
+.profile-settings-input{
+    flex-direction: column;
+    margin-bottom: 16px;
+    max-height: max-content;
+    label{
+        display:flex;
+        flex-direction: column;
+    }
+}
