@@ -51,7 +51,26 @@ export async function apiPost(path, body, { headers = {}, signal } = {}) {
   return responseBody;
 }
 
+export async function apiDelete(path, { headers = {}, signal } = {}) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "DELETE",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
+    },
+    signal,
+  });
 
+  const contentType = res.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const responseBody = isJson ? await res.json().catch(() => null) : await res.text();
+
+  if (!res.ok) {
+    throw new ApiError(`Request failed: ${res.status}`, { status: res.status, data: responseBody });
+  }
+  return responseBody;
+}
 
 export async function apiGet(path, { headers = {}, signal } = {}) {
   const token = getToken();

@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { apiPost, apiGet, getToken } from "../utils/apiClient";
+import { apiPost, apiGet, getToken, apiDelete } from "../utils/apiClient";
 
 export const TaskContext = createContext();
 
@@ -34,7 +34,8 @@ export const TaskProvider = ({ children }) => {
         };
         const data = await apiPost("/tasks", body);
         // Update task with ID from server
-        const taskWithId = { ...task, id: data.id };
+        console.log("Added task to API:", data);
+        const taskWithId = { ...task, id: data.taskId };
         const finalTasklist = updatedTasklist.map(t => t === task ? taskWithId : t);
         setTasklist(organizeTasks(finalTasklist));
         localStorage.setItem("tasklist", JSON.stringify(finalTasklist));
@@ -49,6 +50,14 @@ const removeTask = (taskId) => {
     const updatedTasklist = tasklist.filter((task) => task.id !== taskId);
     setTasklist(organizeTasks(updatedTasklist));
     localStorage.setItem("tasklist", JSON.stringify(updatedTasklist));
+
+    // Optionally, send delete to API
+    const token = getToken();
+    if (token) {
+      apiDelete(`/tasks/${taskId}`).catch((error) => {
+        console.error("Failed to delete task from API:", error);
+      });
+    } 
 };
 
   const updateTask = (updatedTask) => {
@@ -72,7 +81,7 @@ const removeTask = (taskId) => {
         if (data?.tasks || Array.isArray(data)) {
           const serverTasks = (data.tasks || data).map(task => ({
             id: task.id,
-            title: task.title,
+            name: task.title,
             description: task.description || "",
             status: task.status || "pending",
             dueDate: task.due_date || task.dueDate,
