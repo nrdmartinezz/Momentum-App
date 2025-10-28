@@ -1,14 +1,14 @@
 import { faGear, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState} from "react";
 import TimerSettings from "./settings/timerSettings";
 import ProfileSettings from "./settings/ProfileSettings";
 
 const AppSettingsWidget = ({ isTaskListOpen }) => {
   const [appSettingsVisible, setAppSettingsVisible] = useState(false);
   const [appSettingsView, setAppSettingsView] = useState("timer");
-
+ 
   const handleToggle = () => {
     setAppSettingsVisible(!appSettingsVisible);
   };

@@ -1,5 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { apiGet, apiPost, getToken } from "../utils/apiClient";
 
 const WDLS = localStorage.getItem("workDuration");
 const SBLS = localStorage.getItem("shortBreakDuration");
@@ -18,9 +19,68 @@ export const TimerProvider = ({ children }) => {
   const [timeRemaining, setTimeRemaining] = useState(workDuration);
   const [mode, setMode] = useState("WORK");
 
-  const updateDatabase = (newDurations) => {
-    // Add your database update logic here
-    console.log("Updating database with new durations:", newDurations);
+  // Fetch user settings from API on mount
+  useEffect(() => {
+    const loadUserSettings = async () => {
+      const token = getToken();
+      if (!token) {
+        return;
+      }
+
+      try {
+        const data = await apiGet("/users/get_user_settings");
+        
+        if (data) {
+          // API returns: pomodoro_duration, short_break_duration, long_break_duration (in minutes)
+          const pomoDuration = data.pomodoro_duration ?? data.workDuration;
+          const shortDuration = data.short_break_duration ?? data.shortBreakDuration;
+          const longDuration = data.long_break_duration ?? data.longBreakDuration;
+
+          if (pomoDuration !== undefined) {
+            const seconds = pomoDuration * 60;
+            setWorkDuration(seconds);
+            localStorage.setItem("workDuration", pomoDuration);
+          }
+          if (shortDuration !== undefined) {
+            const seconds = shortDuration * 60;
+            setShortBreakDuration(seconds);
+            localStorage.setItem("shortBreakDuration", shortDuration);
+          }
+          if (longDuration !== undefined) {
+            const seconds = longDuration * 60;
+            setLongBreakDuration(seconds);
+            localStorage.setItem("longBreakDuration", longDuration);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to load user settings:", error);
+      }
+    };
+
+    loadUserSettings();
+  }, []);
+
+  const updateDatabase = async (newDurations) => {
+    const token = getToken();
+    if (!token) {
+      console.warn("No auth token, skipping database update");
+      return;
+    }
+
+    try {
+      // Convert seconds back to minutes for API
+      const body = {
+        bodyUserId: localStorage.getItem("user"),
+        pomodoro_duration: Math.round(newDurations.workDuration / 60),
+        short_break_duration: Math.round(newDurations.shortBreakDuration / 60),
+        long_break_duration: Math.round(newDurations.longBreakDuration / 60),
+      };
+      
+      await apiPost("/users/update_user_settings", body);
+      console.log("Database updated successfully with:", body);
+    } catch (error) {
+      console.error("Failed to update database:", error);
+    }
   };
 
   return (

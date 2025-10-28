@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
+import { apiPost, getToken, clearToken } from "../utils/apiClient";
 
 const ProfileContext = createContext();
 const rootStyle = document.documentElement.style;
@@ -27,6 +28,10 @@ const ProfileProvider = ({ children }) => {
 
   const [accentColor, setAccentColor] = useState(getInitialAccentColor());
   const [backgroundImage, setBackgroundImage] = useState(getInitialBackgroundImage());
+  // Auth state
+  const [user, setUser] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
     const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
@@ -46,6 +51,38 @@ const ProfileProvider = ({ children }) => {
     );
   }, [accentColor, backgroundImage]);
 
+  const login = async (body) => {
+    setAuthLoading(true);
+    setAuthError(null); 
+    try {
+      const data = await apiPost("/users/login", body);
+      
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("user", data.userId);
+      setUser(data);
+    } catch (error) {
+      setAuthError(error);
+      console.log("Login error:", error);
+      setUser(null);
+    } finally {         
+      setAuthLoading(false);
+    }
+  };
+
+  const refreshAuth = () => {
+    const token = getToken();
+    if (token) {
+      login({ token });
+    } else {
+      setAuthLoading(false);
+    }
+  };
+
+  const logout = () => {
+    clearToken();
+    setUser(null);
+  };
+
   return (
     <ProfileContext.Provider
       value={{
@@ -53,6 +90,14 @@ const ProfileProvider = ({ children }) => {
         setAccentColor,
         backgroundImage,
         setBackgroundImage,
+        // Auth
+        user,
+        isAuthenticated: !!user,
+        authLoading,
+        authError,
+        refreshAuth,
+        logout,
+        login,
       }}
     >
       {children}
