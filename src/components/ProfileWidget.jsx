@@ -18,7 +18,8 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [shakePopup, setShakePopup] = useState(false);
-  const widgetRef = useRef(null);
+  const buttonRef = useRef(null);
+  const popupRef = useRef(null);
 
   const handleToggle = () => {
     setShowProfile(!showProfile);
@@ -51,7 +52,12 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
   // Close widget when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (widgetRef.current && !widgetRef.current.contains(event.target)) {
+      if (
+        popupRef.current && 
+        !popupRef.current.contains(event.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target)
+      ) {
         setShowProfile(false);
       }
     };
@@ -143,7 +149,7 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
   return (
     <>
       <div
-        ref={widgetRef}
+        ref={buttonRef}
         className={
           "app-settings-widget profile-widget" + (isTaskListOpen ? " push" : "")
         }
@@ -155,11 +161,12 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
         </div>
       </div>
       <div
-        ref={widgetRef}
+        ref={popupRef}
         className={
           "profile-popup-container " + 
           (showProfile ? "profile-visible " : "") + 
-          (shakePopup ? "shake" : "")
+          (shakePopup ? "shake " : "") +
+          (isTaskListOpen ? "push" : "")
         }
       >
         {isAuthenticated ? authMenu() : noAuthMenu()}
