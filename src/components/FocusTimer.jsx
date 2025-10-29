@@ -31,6 +31,23 @@ const FocusTimer = () => {
     [workDuration, shortBreakDuration, longBreakDuration]
   );
 
+  // Update timeRemaining when durations change and timer is not running
+  useEffect(() => {
+    if (!isRunning) {
+      switch (mode) {
+        case "WORK":
+          setTimeRemaining(workDuration);
+          break;
+        case "SHORT":
+          setTimeRemaining(shortBreakDuration);
+          break;
+        case "LONG":
+          setTimeRemaining(longBreakDuration);
+          break;
+      }
+    }
+  }, [workDuration, shortBreakDuration, longBreakDuration, mode, isRunning, setTimeRemaining]);
+
   useEffect(() => {
     if (isRunning) {
       timerController.startTimer((time, mode) => {
@@ -41,7 +58,7 @@ const FocusTimer = () => {
       timerController.pauseTimer();
     }
     return () => timerController.pauseTimer();
-  }, [isRunning, timerController]);
+  }, [isRunning, timerController, setTimeRemaining, setMode]);
 
   const handleStartPause = () => {
     setIsRunning(!isRunning);

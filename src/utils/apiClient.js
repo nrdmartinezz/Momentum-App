@@ -46,7 +46,9 @@ export async function apiPost(path, body, { headers = {}, signal } = {}) {
   const responseBody = isJson ? await res.json().catch(() => null) : await res.text();
 
   if (!res.ok) {
-    throw new ApiError(`Request failed: ${res.status}`, { status: res.status, data: body });
+    // Extract error message from response body
+    const errorMessage = responseBody?.error || responseBody?.message || `Request failed: ${res.status}`;
+    throw new ApiError(errorMessage, { status: res.status, data: responseBody });
   }
   return responseBody;
 }

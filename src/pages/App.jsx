@@ -6,6 +6,8 @@ import AppSettingsWidget from "../components/AppSettingsWidget";
 import { TimerProvider } from "../context/TimerContext";
 import { TaskProvider } from "../context/TaskContext";
 import { ProfileProvider } from "../context/ProfileContext";
+import { ThemeProvider } from "../context/ThemeContext";
+import ProfileWidget from "../components/ProfileWidget";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -21,18 +23,24 @@ function App() {
 
   return (
     <ProfileProvider>
-      <TimerProvider>
-        <TaskProvider>
-          <div className="app-container">
-            <DayTimeWidget></DayTimeWidget>
-            <TaskList onTaskListToggle={onTaskListToggle}></TaskList>
-            <FocusTimer />
-            <AppSettingsWidget
-              isTaskListOpen={isTaskListOpen}
-            ></AppSettingsWidget>
-          </div>
-        </TaskProvider>
-      </TimerProvider>
+      <ThemeProvider>
+        <TimerProvider>
+          <TaskProvider>
+            <div className="app-container">
+              <DayTimeWidget></DayTimeWidget>
+              <TaskList onTaskListToggle={onTaskListToggle}></TaskList>
+              <FocusTimer />
+              <AppSettingsWidget
+                isTaskListOpen={isTaskListOpen}
+              ></AppSettingsWidget>
+              <ProfileWidget
+                isTaskListOpen={isTaskListOpen}
+                isProfileOpen={false}
+              />
+            </div>
+          </TaskProvider>
+        </TimerProvider>
+      </ThemeProvider>
     </ProfileProvider>
   );
 }

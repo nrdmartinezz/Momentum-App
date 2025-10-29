@@ -3,53 +3,26 @@ import PropTypes from "prop-types";
 import { apiPost, getToken, clearToken } from "../utils/apiClient";
 
 const ProfileContext = createContext();
-const rootStyle = document.documentElement.style;
-const LOCAL_STORAGE_KEY = "profileSettings";
 
 const ProfileProvider = ({ children }) => {
-  const getInitialAccentColor = () => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (saved) {
-      const { accentColor } = JSON.parse(saved);
-      if (accentColor) return accentColor;
-    }
-    return rootStyle.getPropertyValue("--global-color-accent") || "#7E52B3";
-  };
-
-  const getInitialBackgroundImage = () => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (saved) {
-      const { backgroundImage } = JSON.parse(saved);
-      if (backgroundImage) return backgroundImage;
-    }
-    return rootStyle.getPropertyValue("--background-image") ||
-      "https://res.cloudinary.com/ddsekdku7/image/upload/v1742144459/default-theme-login.jpg";
-  };
-
-  const [accentColor, setAccentColor] = useState(getInitialAccentColor());
-  const [backgroundImage, setBackgroundImage] = useState(getInitialBackgroundImage());
   // Auth state
   const [user, setUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
 
+  // Check for existing auth on mount
   useEffect(() => {
-    const saved = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (saved) {
-      const { accentColor, backgroundImage } = JSON.parse(saved);
-      if (accentColor) setAccentColor(accentColor);
-      if (backgroundImage) setBackgroundImage(backgroundImage);
+    const token = getToken();
+    const userId = localStorage.getItem("user");
+    
+    if (token && userId) {
+      // User has a token, set user data from localStorage
+      setUser({ userId, token });
     }
+    
+    // Always set loading to false after checking
+    setAuthLoading(false);
   }, []);
-
-  useEffect(() => {
-    rootStyle.setProperty("--global-color-accent", accentColor);
-    rootStyle.setProperty("--background-image", `url(${backgroundImage})`);
-    localStorage.setItem(
-      LOCAL_STORAGE_KEY,
-      JSON.stringify({ accentColor, backgroundImage })
-    );
-  }, [accentColor, backgroundImage]);
 
   const login = async (body) => {
     setAuthLoading(true);
@@ -58,13 +31,35 @@ const ProfileProvider = ({ children }) => {
       const data = await apiPost("/users/login", body);
       
       localStorage.setItem("authToken", data.token);
-      localStorage.setItem("user", data.userId);
+      localStorage.setItem("user", JSON.stringify(data));
       setUser(data);
     } catch (error) {
-      setAuthError(error);
+      // Extract error message from ApiError
+      const errorMessage = error.message || error.data?.error || "Login failed";
+      setAuthError(errorMessage);
       console.log("Login error:", error);
       setUser(null);
     } finally {         
+      setAuthLoading(false);
+    }
+  };
+
+  const signUp = async (body) => {
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      const data = await apiPost("/users/signup", body);
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("user", data.userId);
+      
+      setUser(data);
+    } catch (error) {
+      // Extract error message from ApiError
+      const errorMessage = error.message || error.data?.error || "Sign up failed";
+      setAuthError(errorMessage);
+      console.log("Sign up error:", error);
+      setUser(null);
+    } finally {
       setAuthLoading(false);
     }
   };
@@ -80,16 +75,13 @@ const ProfileProvider = ({ children }) => {
 
   const logout = () => {
     clearToken();
+    localStorage.removeItem("user");
     setUser(null);
   };
 
   return (
     <ProfileContext.Provider
       value={{
-        accentColor,
-        setAccentColor,
-        backgroundImage,
-        setBackgroundImage,
         // Auth
         user,
         isAuthenticated: !!user,
@@ -98,6 +90,7 @@ const ProfileProvider = ({ children }) => {
         refreshAuth,
         logout,
         login,
+        signUp,
       }}
     >
       {children}

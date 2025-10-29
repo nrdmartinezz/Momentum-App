@@ -1,6 +1,7 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { apiGet, apiPost, getToken } from "../utils/apiClient";
+import { ProfileContext } from "./ProfileContext";
 
 const WDLS = localStorage.getItem("workDuration");
 const SBLS = localStorage.getItem("shortBreakDuration");
@@ -9,6 +10,8 @@ const LBLS = localStorage.getItem("longBreakDuration");
 export const TimerContext = createContext();
 
 export const TimerProvider = ({ children }) => {
+  const { isAuthenticated } = useContext(ProfileContext);
+
   const [workDuration, setWorkDuration] = useState(WDLS ? WDLS * 60 : 25 * 60);
   const [shortBreakDuration, setShortBreakDuration] = useState(
     SBLS ? SBLS * 60 : 5 * 60
@@ -24,6 +27,18 @@ export const TimerProvider = ({ children }) => {
     const loadUserSettings = async () => {
       const token = getToken();
       if (!token) {
+        // Reset to defaults when logged out
+        const defaultWork = 25 * 60;
+        const defaultShort = 5 * 60;
+        const defaultLong = 15 * 60;
+        
+        setWorkDuration(defaultWork);
+        setShortBreakDuration(defaultShort);
+        setLongBreakDuration(defaultLong);
+        
+        localStorage.setItem("workDuration", "25");
+        localStorage.setItem("shortBreakDuration", "5");
+        localStorage.setItem("longBreakDuration", "15");
         return;
       }
 
@@ -58,7 +73,7 @@ export const TimerProvider = ({ children }) => {
     };
 
     loadUserSettings();
-  }, []);
+  }, [isAuthenticated]); // Re-run when auth status changes
 
   const updateDatabase = async (newDurations) => {
     const token = getToken();

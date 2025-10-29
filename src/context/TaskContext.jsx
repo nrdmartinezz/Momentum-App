@@ -1,10 +1,13 @@
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
 import { apiPost, apiGet, getToken, apiDelete } from "../utils/apiClient";
+import { ProfileContext } from "./ProfileContext";
 
 export const TaskContext = createContext();
 
 export const TaskProvider = ({ children }) => {
+  const { isAuthenticated } = useContext(ProfileContext);
+
   const [tasklist, setTasklist] = useState(JSON.parse(localStorage.getItem("tasklist")) || ([]));
 
   const [currentTask, setCurrentTask] = useState(null);
@@ -73,6 +76,9 @@ const removeTask = (taskId) => {
     const loadTasks = async () => {
       const token = getToken();
       if (!token) {
+        // Clear tasks when logged out
+        setTasklist([]);
+        localStorage.setItem("tasklist", JSON.stringify([]));
         return;
       }
 
@@ -96,7 +102,7 @@ const removeTask = (taskId) => {
     };
 
     loadTasks();
-  }, []);
+  }, [isAuthenticated]); // Re-run when auth status changes
 
   return (
     <TaskContext.Provider

@@ -1,0 +1,39 @@
+button{
+    border:none;
+    cursor:pointer;
+    outline: none;
+}
+
+.white-btn {
+  background-color: var(--global-color-white);
+  color: var(--global-color-dark);
+  border-radius: 6px;
+  font-family: "adrianna", sans-serif;
+  font-size: 18px;
+  padding: 6px 24px;
+  cursor: pointer;
+  backdrop-filter: blur(5px);
+}
+
+.active-btn {
+  font-family: "adrianna", sans-serif;
+  background-color: var(--global-color-accent);
+  color: var(--global-color-white);
+  border: none;
+  border-radius: 6px;
+  font-size: 18px;
+  padding: 6px 24px;
+  cursor: pointer;
+}
+
+.clear-btn {
+  font-family: "adrianna", sans-serif;
+  font-size: 18px;
+  border: 2px solid var(--global-color-white);
+  border-radius: 5px;
+  padding: 6px 24px;
+  cursor: pointer;
+  background-color: transparent;
+  color: var(--global-color-white);
+  backdrop-filter: blur(5px);
+}

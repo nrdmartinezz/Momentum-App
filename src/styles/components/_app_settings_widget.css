@@ -15,7 +15,7 @@
 
 .app-settings-widget.push {
   right: 320px;
-  transition: 0.3s ease-in-out;
+  transition: 0.28s ease;
 }
 
 .app-settings-container {

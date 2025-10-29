@@ -1,9 +1,12 @@
 import { faGear, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import PropTypes from "prop-types";
-import { useState} from "react";
-import TimerSettings from "./settings/timerSettings";
-import ProfileSettings from "./settings/ProfileSettings";
+import { useState, lazy, Suspense } from "react";
+
+// Lazy load settings components since they're only shown when settings is open
+const TimerSettings = lazy(() => import("./settings/timerSettings"));
+const ProfileSettings = lazy(() => import("./settings/ProfileSettings"));
+const ThemeSettings = lazy(() => import("./settings/ThemeSettings"));
 
 const AppSettingsWidget = ({ isTaskListOpen }) => {
   const [appSettingsVisible, setAppSettingsVisible] = useState(false);
@@ -47,15 +50,15 @@ const AppSettingsWidget = ({ isTaskListOpen }) => {
         </div>
         <div
           className={
-            appSettingsView === "about"
+            appSettingsView === "theme"
               ? "active-settings-menu-item"
               : "settings-menu-item"
           }
           onClick={() => {
-            handleViewChange("about");
+            handleViewChange("theme");
           }}
         >
-          About
+          Theme
         </div>
       </>
     );
@@ -65,13 +68,29 @@ const AppSettingsWidget = ({ isTaskListOpen }) => {
   const SettingsViews = (curView) => {
     switch (curView) {
       case "timer":
-        return <TimerSettings />;
+        return (
+          <Suspense fallback={<div>Loading...</div>}>
+            <TimerSettings />
+          </Suspense>
+        );
       case "profile":
-        return <ProfileSettings />;
-      case "about":
-        return <div>About</div>;
+        return (
+          <Suspense fallback={<div>Loading...</div>}>
+            <ProfileSettings />
+          </Suspense>
+        );
+      case "theme":
+        return (
+          <Suspense fallback={<div>Loading...</div>}>
+            <ThemeSettings />
+          </Suspense>
+        );
       default:
-        return <TimerSettings />;
+        return (
+          <Suspense fallback={<div>Loading...</div>}>
+            <TimerSettings />
+          </Suspense>
+        );
     }
   };
 

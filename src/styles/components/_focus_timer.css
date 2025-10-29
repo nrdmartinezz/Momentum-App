@@ -17,18 +17,7 @@
   font-family: "adrianna", sans-serif;
   margin-right: 12px;
 }
-
- .active-btn {
-    font-family: "adrianna", sans-serif;
-    background-color: var(--global-color-accent);
-    color: var(--global-color-white);
-    border: none;
-    border-radius: 6px;
-    font-size: 18px;
-    padding: 6px 24px;
-    cursor: pointer;
-  }
-
+  
 .timer-controls {
   column-gap: 10px;
 
@@ -43,17 +32,7 @@
     cursor: pointer;
   }
 
-  .clear-btn {
-    font-family: "adrianna", sans-serif;
-    font-size: 18px;
-    border: 2px solid var(--global-color-white);
-    border-radius: 5px;
-    padding: 6px 24px;
-    cursor: pointer;
-    background-color: transparent;
-    color: var(--global-color-white);
-    backdrop-filter: blur(5px);
-  }
+  
   .simple-controls {
     margin: auto;
     border-radius: 100px;
