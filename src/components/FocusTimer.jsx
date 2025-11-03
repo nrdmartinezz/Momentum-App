@@ -7,19 +7,22 @@ import {
   faPlay,
 } from "@fortawesome/free-solid-svg-icons";
 import { TimerContext } from "../context/TimerContext";
+import TimerSkeleton from "./loadingskeletons/TimerSkeleton";
 
 const FocusTimer = () => {
   const {
+    isLoading,
     workDuration,
     shortBreakDuration,
     longBreakDuration,
     timeRemaining,
     mode,
     setTimeRemaining,
-    setMode
+    setMode,
   } = useContext(TimerContext);
 
   const [isRunning, setIsRunning] = useState(false);
+
 
   const timerController = useMemo(
     () =>
@@ -46,7 +49,14 @@ const FocusTimer = () => {
           break;
       }
     }
-  }, [workDuration, shortBreakDuration, longBreakDuration, mode, isRunning, setTimeRemaining]);
+  }, [
+    workDuration,
+    shortBreakDuration,
+    longBreakDuration,
+    mode,
+    isRunning,
+    setTimeRemaining,
+  ]);
 
   useEffect(() => {
     if (isRunning) {
@@ -59,6 +69,10 @@ const FocusTimer = () => {
     }
     return () => timerController.pauseTimer();
   }, [isRunning, timerController, setTimeRemaining, setMode]);
+
+  if (isLoading) {
+    return <TimerSkeleton />;
+  }
 
   const handleStartPause = () => {
     setIsRunning(!isRunning);
@@ -187,6 +201,5 @@ const FocusTimer = () => {
     </div>
   );
 };
-
 
 export default FocusTimer;

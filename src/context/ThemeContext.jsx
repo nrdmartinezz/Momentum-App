@@ -58,12 +58,19 @@ export const ThemeProvider = ({ children }) => {
         setTheme(DEFAULT_THEME);
         applyTheme(DEFAULT_THEME);
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(DEFAULT_THEME));
+        
+        // Minimum delay to show loading state
+        await new Promise(resolve => setTimeout(resolve, 800));
         setIsLoading(false);
         return;
       }
 
+      setIsLoading(true);
+      
+      // Start minimum delay timer
+      const minDelay = new Promise(resolve => setTimeout(resolve, 1200));
+
       try {
-        setIsLoading(true);
         const data = await apiGet("/themes");
 
         const serverTheme = {
@@ -85,6 +92,8 @@ export const ThemeProvider = ({ children }) => {
         setTheme(DEFAULT_THEME);
         applyTheme(DEFAULT_THEME);
       } finally {
+        // Wait for minimum delay before hiding loading state
+        await minDelay;
         setIsLoading(false);
       }
     };

@@ -9,7 +9,7 @@ export const TaskProvider = ({ children }) => {
   const { isAuthenticated } = useContext(ProfileContext);
 
   const [tasklist, setTasklist] = useState(JSON.parse(localStorage.getItem("tasklist")) || ([]));
-
+  const [isLoading, setIsLoading] = useState(true);
   const [currentTask, setCurrentTask] = useState(null);
 
   const organizeTasks = (tasks) => {
@@ -74,11 +74,16 @@ const removeTask = (taskId) => {
   // Load tasks from API on mount
   useEffect(() => {
     const loadTasks = async () => {
+      setIsLoading(true);
+      const minDelay = new Promise(resolve => setTimeout(resolve, 800));
+      
       const token = getToken();
       if (!token) {
         // Clear tasks when logged out
         setTasklist([]);
         localStorage.setItem("tasklist", JSON.stringify([]));
+        await minDelay;
+        setIsLoading(false);
         return;
       }
 
@@ -99,6 +104,9 @@ const removeTask = (taskId) => {
       } catch (error) {
         console.error("Failed to load tasks from API:", error);
       }
+      
+      await minDelay;
+      setIsLoading(false);
     };
 
     loadTasks();
@@ -107,6 +115,7 @@ const removeTask = (taskId) => {
   return (
     <TaskContext.Provider
       value={{
+        isLoading,
         tasklist,
         setTasklist,
         currentTask,

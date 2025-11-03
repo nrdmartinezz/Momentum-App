@@ -1,0 +1,68 @@
+/* Background Loading Overlay */
+.background-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+  background: linear-gradient(
+    90deg,
+    var(--global-color-purple) 0%,
+    rgba(138, 98, 204, 0.7) 25%,
+    var(--global-color-purple) 50%,
+    rgba(138, 98, 204, 0.7) 75%,
+    var(--global-color-purple) 100%
+  );
+  background-size: 200% 100%;
+  animation: fadeIn 0.3s ease-in forwards, shimmerBackground 10s ease-in-out infinite;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.background-loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+
+.background-loader-text {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: "adrianna", sans-serif;
+  font-size: 14px;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmerBackground {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Fade out when content is ready */
+.background-loader.fade-out {
+  animation: fadeOut 0.5s ease-out forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

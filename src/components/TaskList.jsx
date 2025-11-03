@@ -5,13 +5,18 @@ import { faCaretLeft, faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import TaskCard from "./TaskCard";
 import CreateTask from "./popups/CreateTask";
 import { TaskContext } from "../context/TaskContext";
+import TaskListSkeleton from "./loadingskeletons/TaskListSkeleton";
 
 const TaskList = ({ onTaskListToggle }) => {
-  const { tasklist, setCurrentTask, currentTask, organizeTasks, removeTask } =
+  const { isLoading, tasklist, setCurrentTask, currentTask, organizeTasks, removeTask } =
     useContext(TaskContext);
   const [isVisible, setIsVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState(currentTask);
   const [createTaskPopupVisible, setCreateTaskPopupVisible] = useState(false);
+
+  if (isLoading) {
+    return <TaskListSkeleton />;
+  }
 
   const groupedTasks = organizeTasks(tasklist);
 

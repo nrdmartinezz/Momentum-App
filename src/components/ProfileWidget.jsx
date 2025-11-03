@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import { ProfileContext } from "../context/ProfileContext";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Login from "../forms/Login";
+import SignUp from "../forms/SignUp";
+import EditProfile from "./popups/EditProfile";
 
 const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
   const {
@@ -15,8 +18,8 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
     authError,
   } = useContext(ProfileContext);
   const [showProfile, setShowProfile] = useState(isProfileOpen);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [showSignUp, setShowSignUp] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
   const [shakePopup, setShakePopup] = useState(false);
   const buttonRef = useRef(null);
   const popupRef = useRef(null);
@@ -25,18 +28,35 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
     setShowProfile(!showProfile);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await login({ email, password });
-    // Always clear password for security
-    setPassword("");
+  const handleLogin = async (credentials) => {
+    await login(credentials);
   };
 
-  // Clear both fields when successfully authenticated
+  const handleSignUp = async (credentials) => {
+    await signUp(credentials);
+  };
+
+  const switchToSignUp = () => {
+    setShowSignUp(true);
+  };
+
+  const switchToLogin = () => {
+    setShowSignUp(false);
+  };
+
+  const openEditProfile = () => {
+    setShowEditProfile(true);
+    setShowProfile(false); // Close the dropdown when opening edit
+  };
+
+  const closeEditProfile = () => {
+    setShowEditProfile(false);
+  };
+
+  // Reset to login view when authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      setEmail("");
-      setPassword("");
+      setShowSignUp(false);
     }
   }, [isAuthenticated]);
 
@@ -81,7 +101,14 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
         ) : (
           <div className="user-info adrianna-regular flex-col">
             <span>Welcome, {user ? user.name : "User"}!</span>
-            <button className="clear-btn" onClick={logout}>Logout</button>
+            <div className="user-actions">
+              <button className="clear-btn" onClick={openEditProfile}>
+                Edit Profile
+              </button>
+              <button className="clear-btn" onClick={logout}>
+                Logout
+              </button>
+            </div>
           </div>
         )}
         {authError && (
@@ -94,55 +121,29 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
   };
 
   const noAuthMenu = () => {
+    if (showSignUp) {
+      return (
+        <SignUp
+          onSubmit={handleSignUp}
+          onSwitchToLogin={switchToLogin}
+          authLoading={authLoading}
+          authError={authError}
+          isAuthenticated={isAuthenticated}
+        />
+      );
+    }
+
     return (
-      <div className="no-auth-menu adrianna-regular">
-        {authLoading ? (
-          <div className="auth-loading">
-            <span>Authenticating...</span>
-          </div>
-        ) : (
-          <>
-            <form onSubmit={handleSubmit} className="login-form">
-              <div className="form-group">
-                <label htmlFor="email">Email</label>
-                <input
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  required
-                />
-              </div>
-              <div className="form-group">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                />
-              </div>
-              <button type="submit" className="white-btn">
-                Login
-              </button>
-            </form>
-            <div className="signup-alternative">
-              <span>Don&apos;t have an account?</span>
-              <button className="link-btn" onClick={signUp}>
-                Sign Up
-              </button>
-            </div>
-          </>
-        )}
-        {authError && (
-          <div className="auth-error">
-            <span>Error: {authError}</span>
-          </div>
-        )}
-      </div>
+      <>
+        <Login
+          onSubmit={handleLogin}
+          authLoading={authLoading}
+          authError={authError}
+          isAuthenticated={isAuthenticated}
+          onSwitchToSignUp={switchToSignUp}
+        />
+        
+      </>
     );
   };
 
@@ -171,6 +172,7 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
       >
         {isAuthenticated ? authMenu() : noAuthMenu()}
       </div>
+      <EditProfile isOpen={showEditProfile} onClose={closeEditProfile} />
     </>
   );
 };

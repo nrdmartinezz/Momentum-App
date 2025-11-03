@@ -1,0 +1,102 @@
+/* Timer Skeleton Loading */
+.timer-skeleton-time {
+  margin-right: 12px;
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  z-index: 20;
+}
+
+.timer-skeleton-digit,
+.timer-skeleton-colon {
+  display: inline-block;
+  animation: hop 0.6s ease-in-out infinite;
+  opacity: 0.3;
+}
+
+@keyframes hop {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.timer-skeleton-dot {
+  width: 25px;
+  height: 25px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 1000px;
+}
+
+.timer-skeleton-controls {
+  gap: 10px;
+}
+
+.timer-skeleton-button {
+  width: 45px;
+  height: 45px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 100px;
+}
+
+.timer-skeleton-mode-btn {
+  min-width: 100px;
+  height: 38px;
+  padding: 6px 24px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 6px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .timer-skeleton-time {
+    width: 280px;
+    height: 120px;
+  }
+
+  .timer-skeleton-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .timer-skeleton-mode-btn {
+    min-width: 80px;
+    padding: 6px 12px;
+  }
+
+  .timer-skeleton-dot {
+    width: 20px;
+    height: 20px;
+  }
+}

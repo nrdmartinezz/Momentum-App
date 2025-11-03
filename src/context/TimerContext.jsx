@@ -21,6 +21,7 @@ export const TimerProvider = ({ children }) => {
   );
   const [timeRemaining, setTimeRemaining] = useState(workDuration);
   const [mode, setMode] = useState("WORK");
+  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch user settings from API on mount
   useEffect(() => {
@@ -39,8 +40,17 @@ export const TimerProvider = ({ children }) => {
         localStorage.setItem("workDuration", "25");
         localStorage.setItem("shortBreakDuration", "5");
         localStorage.setItem("longBreakDuration", "15");
+        
+        // Minimum delay to show loading state
+        await new Promise(resolve => setTimeout(resolve, 800));
+        setIsLoading(false);
         return;
       }
+
+      setIsLoading(true);
+      
+      // Start minimum delay timer
+      const minDelay = new Promise(resolve => setTimeout(resolve, 1000));
 
       try {
         const data = await apiGet("/users/get_user_settings");
@@ -69,6 +79,10 @@ export const TimerProvider = ({ children }) => {
         }
       } catch (error) {
         console.error("Failed to load user settings:", error);
+      } finally {
+        // Wait for minimum delay before hiding loading state
+        await minDelay;
+        setIsLoading(false);
       }
     };
 
@@ -84,8 +98,8 @@ export const TimerProvider = ({ children }) => {
 
     try {
       // Convert seconds back to minutes for API
+      // User ID is extracted from JWT token on backend
       const body = {
-        bodyUserId: localStorage.getItem("user"),
         pomodoro_duration: Math.round(newDurations.workDuration / 60),
         short_break_duration: Math.round(newDurations.shortBreakDuration / 60),
         long_break_duration: Math.round(newDurations.longBreakDuration / 60),
@@ -101,6 +115,7 @@ export const TimerProvider = ({ children }) => {
   return (
     <TimerContext.Provider
       value={{
+        isLoading,
         workDuration,
         setWorkDuration: (value) => {
           setWorkDuration(value);

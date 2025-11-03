@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { apiPost, getToken, clearToken } from "../utils/apiClient";
+import { apiPost, apiPut, getToken, clearToken } from "../utils/apiClient";
+import { getUserFromToken, isTokenValid } from "../utils/jwtUtils";
 
 const ProfileContext = createContext();
 
@@ -12,16 +13,30 @@ const ProfileProvider = ({ children }) => {
 
   // Check for existing auth on mount
   useEffect(() => {
-    const token = getToken();
-    const userId = localStorage.getItem("user");
+    const checkAuth = async () => {
+      const token = getToken();
+      
+      // Minimum delay to show loading state
+      const minDelay = new Promise(resolve => setTimeout(resolve, 600));
+      
+      if (token && isTokenValid(token)) {
+        // Decode token to get user data
+        const userData = getUserFromToken(token);
+        if (userData) {
+          setUser(userData);
+        }
+      } else {
+        // Token is expired or invalid, clear it
+        clearToken();
+        localStorage.removeItem("user");
+      }
+      
+      // Wait for minimum delay before hiding loading state
+      await minDelay;
+      setAuthLoading(false);
+    };
     
-    if (token && userId) {
-      // User has a token, set user data from localStorage
-      setUser({ userId, token });
-    }
-    
-    // Always set loading to false after checking
-    setAuthLoading(false);
+    checkAuth();
   }, []);
 
   const login = async (body) => {
@@ -30,9 +45,16 @@ const ProfileProvider = ({ children }) => {
     try {
       const data = await apiPost("/users/login", body);
       
+      // Store token
       localStorage.setItem("authToken", data.token);
-      localStorage.setItem("user", JSON.stringify(data));
-      setUser(data);
+      
+      // Decode token to get user data
+      const userData = getUserFromToken(data.token);
+      if (userData) {
+        setUser(userData);
+      } else {
+        throw new Error("Invalid token received");
+      }
     } catch (error) {
       // Extract error message from ApiError
       const errorMessage = error.message || error.data?.error || "Login failed";
@@ -49,10 +71,17 @@ const ProfileProvider = ({ children }) => {
     setAuthError(null);
     try {
       const data = await apiPost("/users/signup", body);
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("user", data.userId);
       
-      setUser(data);
+      // Store token
+      localStorage.setItem("authToken", data.token);
+      
+      // Decode token to get user data
+      const userData = getUserFromToken(data.token);
+      if (userData) {
+        setUser(userData);
+      } else {
+        throw new Error("Invalid token received");
+      }
     } catch (error) {
       // Extract error message from ApiError
       const errorMessage = error.message || error.data?.error || "Sign up failed";
@@ -66,17 +95,50 @@ const ProfileProvider = ({ children }) => {
 
   const refreshAuth = () => {
     const token = getToken();
-    if (token) {
-      login({ token });
+    if (token && isTokenValid(token)) {
+      const userData = getUserFromToken(token);
+      if (userData) {
+        setUser(userData);
+      }
     } else {
-      setAuthLoading(false);
+      clearToken();
+      setUser(null);
     }
+    setAuthLoading(false);
   };
 
   const logout = () => {
     clearToken();
-    localStorage.removeItem("user");
     setUser(null);
+  };
+
+  const updateProfile = async (body) => {
+    setAuthLoading(true);
+    setAuthError(null);
+    try {
+      const data = await apiPut("/users/update_profile", body);
+      console.log("Profile updated:", data);
+      
+      // Backend returns a new token with updated user data
+      if (data.token) {
+        localStorage.setItem("authToken", data.token);
+        
+        // Decode new token to get updated user data
+        const userData = getUserFromToken(data.token);
+        if (userData) {
+          setUser(userData);
+        }
+      }
+      
+      return data;
+    } catch (error) {
+      const errorMessage = error.message || error.data?.error || "Profile update failed";
+      setAuthError(errorMessage);
+      console.log("Profile update error:", error);
+      throw error;
+    } finally {
+      setAuthLoading(false);
+    }
   };
 
   return (
@@ -91,6 +153,7 @@ const ProfileProvider = ({ children }) => {
         logout,
         login,
         signUp,
+        updateProfile,
       }}
     >
       {children}
