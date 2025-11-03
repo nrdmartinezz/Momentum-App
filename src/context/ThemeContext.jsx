@@ -110,33 +110,56 @@ export const ThemeProvider = ({ children }) => {
   const updateTheme = async (updates) => {
     const newTheme = { ...theme, ...updates };
 
-    // Update state and localStorage immediately for fast UI
-    setTheme(newTheme);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTheme));
+    console.log("Updating theme with:", updates);
 
-    // Sync to API if authenticated
+    // Sync to API if authenticated (do this first to get the Cloudinary URL)
     const token = getToken();
     if (token) {
       try {
-        await apiPost("/themes/update", {
+        const response = await apiPost("/themes/update", {
           accent_color: newTheme.accent_color,
           primary_color: newTheme.primary_color,
           background_image: newTheme.background_image,
           sound: newTheme.sound,
         });
-        console.log("Theme synced to server successfully");
+        console.log("Theme synced to server successfully:", response);
+
+        // If the server returned updated theme data (with Cloudinary URL), use it
+        if (response?.theme) {
+          const serverTheme = {
+            ...newTheme,
+            accent_color: response.theme.accent_color || newTheme.accent_color,
+            primary_color: response.theme.primary_color || newTheme.primary_color,
+            background_image: response.theme.background_image || newTheme.background_image,
+            sound: response.theme.sound || newTheme.sound,
+          };
+          
+          setTheme(serverTheme);
+          applyTheme(serverTheme);
+          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(serverTheme));
+          return;
+        }
       } catch (err) {
         console.error("Failed to sync theme to server:", err);
         setError(err?.message || "Failed to save theme");
+        throw err; // Re-throw so the caller knows it failed
       }
     }
+
+    // Fallback: Update state and localStorage if no server sync
+    setTheme(newTheme);
+    applyTheme(newTheme);
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(newTheme));
   };
 
   // Update individual theme properties
-  const setAccentColor = (color) => updateTheme({ accent_color: color });
-  const setPrimaryColor = (color) => updateTheme({ primary_color: color });
-  const setBackgroundImage = (url) => updateTheme({ background_image: url });
-  const setSound = (sound) => updateTheme({ sound });
+  const setAccentColor = async (color) => await updateTheme({ accent_color: color });
+  const setPrimaryColor = async (color) => await updateTheme({ primary_color: color });
+  const setBackgroundImage = async (url) => {
+    console.log("Setting background image:", url?.substring(0, 50));
+    await updateTheme({ background_image: url });
+  };
+  const setSound = async (sound) => await updateTheme({ sound });
 
   // Reset to default theme
   const resetTheme = async () => {

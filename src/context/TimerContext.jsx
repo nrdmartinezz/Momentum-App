@@ -56,25 +56,25 @@ export const TimerProvider = ({ children }) => {
         const data = await apiGet("/users/get_user_settings");
         
         if (data) {
-          // API returns: pomodoro_duration, short_break_duration, long_break_duration (in minutes)
-          const pomoDuration = data.pomodoro_duration ?? data.workDuration;
-          const shortDuration = data.short_break_duration ?? data.shortBreakDuration;
-          const longDuration = data.long_break_duration ?? data.longBreakDuration;
+          // API returns: pomodoro_duration, short_break_duration, long_break_duration (in seconds)
+          const pomoSeconds = data.pomodoro_duration ?? data.workDuration;
+          const shortSeconds = data.short_break_duration ?? data.shortBreakDuration;
+          const longSeconds = data.long_break_duration ?? data.longBreakDuration;
 
-          if (pomoDuration !== undefined) {
-            const seconds = pomoDuration * 60;
+          if (pomoSeconds !== undefined) {
+            const seconds = parseInt(pomoSeconds, 10);
             setWorkDuration(seconds);
-            localStorage.setItem("workDuration", pomoDuration);
+            localStorage.setItem("workDuration", Math.round(seconds / 60));
           }
-          if (shortDuration !== undefined) {
-            const seconds = shortDuration * 60;
+          if (shortSeconds !== undefined) {
+            const seconds = parseInt(shortSeconds, 10);
             setShortBreakDuration(seconds);
-            localStorage.setItem("shortBreakDuration", shortDuration);
+            localStorage.setItem("shortBreakDuration", Math.round(seconds / 60));
           }
-          if (longDuration !== undefined) {
-            const seconds = longDuration * 60;
+          if (longSeconds !== undefined) {
+            const seconds = parseInt(longSeconds, 10);
             setLongBreakDuration(seconds);
-            localStorage.setItem("longBreakDuration", longDuration);
+            localStorage.setItem("longBreakDuration", Math.round(seconds / 60));
           }
         }
       } catch (error) {
@@ -97,16 +97,16 @@ export const TimerProvider = ({ children }) => {
     }
 
     try {
-      // Convert seconds back to minutes for API
+      // Send durations in seconds for exact precision
       // User ID is extracted from JWT token on backend
       const body = {
-        pomodoro_duration: Math.round(newDurations.workDuration / 60),
-        short_break_duration: Math.round(newDurations.shortBreakDuration / 60),
-        long_break_duration: Math.round(newDurations.longBreakDuration / 60),
+        pomodoro_duration: newDurations.workDuration,
+        short_break_duration: newDurations.shortBreakDuration,
+        long_break_duration: newDurations.longBreakDuration,
       };
       
       await apiPost("/users/update_user_settings", body);
-      console.log("Database updated successfully with:", body);
+      console.log("Database updated successfully with (seconds):", body);
     } catch (error) {
       console.error("Failed to update database:", error);
     }
@@ -118,32 +118,35 @@ export const TimerProvider = ({ children }) => {
         isLoading,
         workDuration,
         setWorkDuration: (value) => {
-          setWorkDuration(value);
-          localStorage.setItem("workDuration", value / 60);
+          const totalSeconds = Math.round(value);
+          setWorkDuration(totalSeconds);
+          localStorage.setItem("workDuration", Math.round(totalSeconds / 60));
           updateDatabase({
-            workDuration: value,
+            workDuration: totalSeconds,
             shortBreakDuration,
             longBreakDuration,
           });
         },
         shortBreakDuration,
         setShortBreakDuration: (value) => {
-          setShortBreakDuration(value);
-          localStorage.setItem("shortBreakDuration", value / 60);
+          const totalSeconds = Math.round(value);
+          setShortBreakDuration(totalSeconds);
+          localStorage.setItem("shortBreakDuration", Math.round(totalSeconds / 60));
           updateDatabase({
             workDuration,
-            shortBreakDuration: value,
+            shortBreakDuration: totalSeconds,
             longBreakDuration,
           });
         },
         longBreakDuration,
         setLongBreakDuration: (value) => {
-          setLongBreakDuration(value);
-          localStorage.setItem("longBreakDuration", value / 60);
+          const totalSeconds = Math.round(value);
+          setLongBreakDuration(totalSeconds);
+          localStorage.setItem("longBreakDuration", Math.round(totalSeconds / 60));
           updateDatabase({
             workDuration,
             shortBreakDuration,
-            longBreakDuration: value,
+            longBreakDuration: totalSeconds,
           });
         },
         timeRemaining,

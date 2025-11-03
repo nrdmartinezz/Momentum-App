@@ -5,7 +5,6 @@ import { useState, lazy, Suspense } from "react";
 
 // Lazy load settings components since they're only shown when settings is open
 const TimerSettings = lazy(() => import("./settings/timerSettings"));
-const ProfileSettings = lazy(() => import("./settings/ProfileSettings"));
 const ThemeSettings = lazy(() => import("./settings/ThemeSettings"));
 
 const AppSettingsWidget = ({ isTaskListOpen }) => {
@@ -38,18 +37,6 @@ const AppSettingsWidget = ({ isTaskListOpen }) => {
         </div>
         <div
           className={
-            appSettingsView === "profile"
-              ? "active-settings-menu-item"
-              : "settings-menu-item"
-          }
-          onClick={() => {
-            handleViewChange("profile");
-          }}
-        >
-          Profile
-        </div>
-        <div
-          className={
             appSettingsView === "theme"
               ? "active-settings-menu-item"
               : "settings-menu-item"
@@ -71,12 +58,6 @@ const AppSettingsWidget = ({ isTaskListOpen }) => {
         return (
           <Suspense fallback={<div>Loading...</div>}>
             <TimerSettings />
-          </Suspense>
-        );
-      case "profile":
-        return (
-          <Suspense fallback={<div>Loading...</div>}>
-            <ProfileSettings />
           </Suspense>
         );
       case "theme":

@@ -81,12 +81,33 @@
 }
 
 .timer-settings-input {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 16px;
+
   label {
     font-size: 16px;
-    margin-bottom: 4px;
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 8px;
   }
+
+  .duration-inputs {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    flex-direction: row;
+  }
+
+  .duration-input-group {
+    display: flex;
+    gap: 6px;
+
+    span {
+      font-size: 14px;
+      color: var(--global-color-white);
+      min-width: 30px;
+    }
+  }
+
   input {
     background-color: var(--global-color-transparent-white);
     border: unset;
@@ -94,8 +115,7 @@
     /* border-radius: 4px; */
     color: var(--global-color-white);
     padding: 6px 12px;
-    margin-bottom: 8px;
-    max-width: 50%;
+    text-align: center;
   }
   /* Hide the default step arrows */
 input[type="number"]::-webkit-outer-spin-button,
@@ -115,8 +135,9 @@ input[type="number"] {
   border-bottom: 1px solid var(--global-color-accent);
   color: var(--global-color-white);
   padding: 6px 12px;
+  text-align: left;
   margin-bottom: 8px;
-  max-width: 50%;
+  min-width: max-content;
 }
 }
 
