@@ -19,7 +19,7 @@ const DEFAULT_THEME = {
 };
 
 export const ThemeProvider = ({ children }) => {
-  const { isAuthenticated } = useContext(ProfileContext);
+  const { isAuthenticated, authLoading } = useContext(ProfileContext);
 
   // Initialize state from localStorage or defaults
   const getInitialTheme = () => {
@@ -38,6 +38,24 @@ export const ThemeProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Helper function to convert hex to RGBA with darkness and transparency
+  const hexToTransparentDark = (hex, opacity = 0.8, darkenAmount = 0.3) => {
+    // Remove # if present
+    hex = hex.replace("#", "");
+    
+    // Parse hex to RGB
+    let r = parseInt(hex.substring(0, 2), 16);
+    let g = parseInt(hex.substring(2, 4), 16);
+    let b = parseInt(hex.substring(4, 6), 16);
+    
+    // Darken the color by reducing RGB values
+    r = Math.floor(r * (1 - darkenAmount));
+    g = Math.floor(g * (1 - darkenAmount));
+    b = Math.floor(b * (1 - darkenAmount));
+    
+    return `rgba(${r}, ${g}, ${b}, ${opacity})`;
+  };
+
   // Apply theme to CSS variables
   const applyTheme = (themeData) => {
     rootStyle.setProperty("--global-color-accent", themeData.accent_color);
@@ -46,10 +64,19 @@ export const ThemeProvider = ({ children }) => {
       "--background-image",
       `url(${themeData.background_image})`
     );
+    
+    // Create a dark transparent version of the accent color
+    const darkTransparentAccent = hexToTransparentDark(themeData.accent_color, 0.8, 0.7);
+    rootStyle.setProperty("--global-color-transparent-black", darkTransparentAccent);
   };
 
   // Load theme from API on mount if authenticated
   useEffect(() => {
+    // Don't load theme until auth check is complete
+    if (authLoading) {
+      return;
+    }
+
     const loadTheme = async () => {
       const token = getToken();
 
@@ -99,12 +126,14 @@ export const ThemeProvider = ({ children }) => {
     };
 
     loadTheme();
-  }, [isAuthenticated]); // Re-run when auth status changes
+  }, [isAuthenticated, authLoading]); // Wait for auth check, then load theme
 
-  // Apply theme whenever it changes
+  // Apply theme whenever it changes (but only after initial load)
   useEffect(() => {
-    applyTheme(theme);
-  }, [theme]);
+    if (!isLoading) {
+      applyTheme(theme);
+    }
+  }, [theme, isLoading]);
 
   // Update theme (saves to API if authenticated, otherwise localStorage only)
   const updateTheme = async (updates) => {

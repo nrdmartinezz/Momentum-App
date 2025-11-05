@@ -23,7 +23,7 @@ const FocusTimer = () => {
 
   const [isRunning, setIsRunning] = useState(false);
 
-
+  // Create controller once - durations are updated via setDurations
   const timerController = useMemo(
     () =>
       new FocusTimerController(
@@ -31,32 +31,27 @@ const FocusTimer = () => {
         shortBreakDuration,
         longBreakDuration
       ),
-    [workDuration, shortBreakDuration, longBreakDuration]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
   );
 
-  // Update timeRemaining when durations change and timer is not running
+  // Update controller durations when they change
   useEffect(() => {
-    if (!isRunning) {
-      switch (mode) {
-        case "WORK":
-          setTimeRemaining(workDuration);
-          break;
-        case "SHORT":
-          setTimeRemaining(shortBreakDuration);
-          break;
-        case "LONG":
-          setTimeRemaining(longBreakDuration);
-          break;
-      }
+    const wasRunning = isRunning;
+    timerController.setDurations(
+      workDuration,
+      shortBreakDuration,
+      longBreakDuration
+    );
+    
+    // Only update time remaining if timer is not running
+    // This prevents resetting the time when pausing
+    if (!wasRunning) {
+      setTimeRemaining(timerController.getTimeRemaining());
     }
-  }, [
-    workDuration,
-    shortBreakDuration,
-    longBreakDuration,
-    mode,
-    isRunning,
-    setTimeRemaining,
-  ]);
+    // setTimeRemaining is stable from context, doesn't need to be in deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workDuration, shortBreakDuration, longBreakDuration, timerController]);
 
   useEffect(() => {
     if (isRunning) {
@@ -79,36 +74,17 @@ const FocusTimer = () => {
   };
 
   const handleModeChange = (newMode) => {
-    setMode(newMode);
     setIsRunning(false);
-    timerController.startMode((time, mode) => {
-      setTimeRemaining(time);
-      setMode(mode);
-    }, newMode);
-    timerController.pauseTimer();
+    timerController.changeMode(newMode);
+    setMode(newMode);
+    setTimeRemaining(timerController.getTimeRemaining());
   };
 
   const handleReset = () => {
-    let curDuration = 0;
-
-    switch (mode) {
-      case "SHORT":
-        curDuration = shortBreakDuration;
-        break;
-      case "LONG":
-        curDuration = longBreakDuration;
-        break;
-      case "WORK":
-        curDuration = workDuration;
-        break;
-    }
-
-    setTimeRemaining(curDuration);
     setIsRunning(false);
-    timerController.resetTimer((time, mode) => {
-      setTimeRemaining(time);
-      setMode(mode);
-    });
+    timerController.resetTimer();
+    setTimeRemaining(timerController.getTimeRemaining());
+    setMode(timerController.getMode());
   };
 
   const formatTime = (seconds) => {
@@ -156,29 +132,20 @@ const FocusTimer = () => {
       <div className="timer-controls">
         <button
           className={mode === "WORK" ? "active-btn" : "clear-btn"}
-          onClick={() => {
-            setTimeRemaining(workDuration);
-            handleModeChange("WORK");
-          }}
+          onClick={() => handleModeChange("WORK")}
         >
           Pomodoro
         </button>
 
         <button
           className={mode === "SHORT" ? "active-btn" : "clear-btn"}
-          onClick={() => {
-            setTimeRemaining(shortBreakDuration);
-            handleModeChange("SHORT");
-          }}
+          onClick={() => handleModeChange("SHORT")}
         >
           Short Break
         </button>
         <button
           className={mode === "LONG" ? "active-btn" : "clear-btn"}
-          onClick={() => {
-            setTimeRemaining(longBreakDuration);
-            handleModeChange("LONG");
-          }}
+          onClick={() => handleModeChange("LONG")}
         >
           Long Break
         </button>

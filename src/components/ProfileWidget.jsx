@@ -99,7 +99,7 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
             <span>Loading...</span>
           </div>
         ) : (
-          <div className="user-info adrianna-regular flex-col">
+          <div className="user-info white-text adrianna-regular flex-col">
             <span>Welcome, {user ? user.name : "User"}!</span>
             <div className="user-actions">
               <button className="clear-btn" onClick={openEditProfile}>

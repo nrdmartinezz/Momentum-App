@@ -90,21 +90,39 @@ class FocusTimerController {
 
   startMode(callback, mode) {
     this.pauseTimer();
+    this.mode = mode;
+    this.timeRemaining = this.getDurationForMode(mode);
+    callback(this.timeRemaining, this.mode);
+  }
+
+  changeMode(mode) {
+    this.pauseTimer();
+    this.mode = mode;
+    this.timeRemaining = this.getDurationForMode(mode);
+  }
+
+  getDurationForMode(mode) {
     switch (mode) {
       case "SHORT":
-        this.mode = mode;
-        this.timeRemaining = this.shortBreakDuration;
-        break;
+        return this.shortBreakDuration;
       case "LONG":
-        this.mode = mode;
-        this.timeRemaining = this.longBreakDuration;
-        break;
+        return this.longBreakDuration;
       case "WORK":
-        this.mode = mode;
-        this.timeRemaining = this.workDuration;
-        break;
+        return this.workDuration;
+      default:
+        return this.workDuration;
     }
-    this.startTimer(callback);
+  }
+
+  setDurations(workDuration, shortBreakDuration, longBreakDuration) {
+    this.workDuration = workDuration;
+    this.shortBreakDuration = shortBreakDuration;
+    this.longBreakDuration = longBreakDuration;
+    
+    // Update timeRemaining if timer is not running
+    if (!this.timer) {
+      this.timeRemaining = this.getDurationForMode(this.mode);
+    }
   }
 }
 

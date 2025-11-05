@@ -41,3 +41,7 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.white-text {
+  color: var(--global-color-white);
+}

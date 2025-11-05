@@ -196,3 +196,27 @@
         transform: translateX(0);
     }
 }
+
+.auth-success{
+    color: #fff;
+    text-align: center;
+    background: #22c55e;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: successSlideIn 0.4s ease-out;
+}
+
+@keyframes successSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(0) scale(1.02);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}

@@ -6,6 +6,7 @@
     --global-color-white-lavendar:#F7F1FF;
     --global-color-slate:#333136;
     --global-color-black:#0C0612;
+    /* Dynamic: Updated by ThemeContext based on accent color */
     --global-color-transparent-black:rgba(12, 6, 18, 0.8);
 
     --background-image: url("https://res.cloudinary.com/ddsekdku7/image/upload/v1742144459/default-theme-login.jpg");
