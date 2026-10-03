@@ -1,0 +1,13 @@
+runConfig:
+  cpu: 1
+  memoryMiB: 512
+  minInstances: 0
+  maxInstances: 100
+  concurrency: 80
+
+env:
+  - variable: NEXT_PUBLIC_PROD_API_URL
+    value: https://api-htcjupsxgq-uc.a.run.app
+    availability:
+      - BUILD
+      - RUNTIME

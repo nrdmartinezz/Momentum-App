@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect, useRef } from "react";
+import Link from "next/link";
 import PropTypes from "prop-types";
 import { ProfileContext } from "../context/ProfileContext";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
@@ -105,6 +106,9 @@ const ProfileWidget = ({ isProfileOpen, isTaskListOpen }) => {
               <button className="clear-btn" onClick={openEditProfile}>
                 Edit Profile
               </button>
+              <Link href="/account" className="clear-btn" onClick={() => setShowProfile(false)}>
+                Account
+              </Link>
               <button className="clear-btn" onClick={logout}>
                 Logout
               </button>

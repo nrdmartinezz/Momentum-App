@@ -1,6 +1,9 @@
 .app-container{
-    min-width: 100vw;
-   min-height: 100vh;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100vh;
+    container-type: inline-size;
+    container-name: app;
     background-image: var(--background-image);
     background-repeat: no-repeat;
     background-size: cover;
@@ -8,4 +11,42 @@
     flex-direction: column;
     justify-content: space-between;
     padding: 24px;
+}
+
+.account-page {
+    width: min(720px, 100%);
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-height: 100vh;
+    overflow: auto;
+    padding-bottom: 48px;
+}
+
+.account-panel {
+    background: var(--global-color-transparent-black, rgba(0, 0, 0, 0.55));
+    color: var(--global-color-white, #fff);
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.account-panel h1 {
+    margin-bottom: 12px;
+}
+
+.account-identity {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-bottom: 16px;
+}
+
+.account-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.account-back {
+    align-self: flex-start;
 }

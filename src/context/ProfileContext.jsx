@@ -2,6 +2,7 @@ import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { apiPost, apiPut, getToken, clearToken } from "../utils/apiClient";
 import { getUserFromToken, isTokenValid } from "../utils/jwtUtils";
+import { clearSessionData } from "../utils/sessionData";
 
 const ProfileContext = createContext();
 
@@ -13,30 +14,20 @@ const ProfileProvider = ({ children }) => {
 
   // Check for existing auth on mount
   useEffect(() => {
-    const checkAuth = async () => {
-      const token = getToken();
-      
-      // Minimum delay to show loading state
-      const minDelay = new Promise(resolve => setTimeout(resolve, 600));
-      
-      if (token && isTokenValid(token)) {
-        // Decode token to get user data
-        const userData = getUserFromToken(token);
-        if (userData) {
-          setUser(userData);
-        }
-      } else {
-        // Token is expired or invalid, clear it
-        clearToken();
-        localStorage.removeItem("user");
+    const token = getToken();
+
+    if (token && isTokenValid(token)) {
+      const userData = getUserFromToken(token);
+      if (userData) {
+        setUser(userData);
       }
-      
-      // Wait for minimum delay before hiding loading state
-      await minDelay;
-      setAuthLoading(false);
-    };
-    
-    checkAuth();
+    } else {
+      clearToken();
+      clearSessionData();
+      localStorage.removeItem("user");
+    }
+
+    setAuthLoading(false);
   }, []);
 
   const login = async (body) => {
@@ -109,6 +100,7 @@ const ProfileProvider = ({ children }) => {
 
   const logout = () => {
     clearToken();
+    clearSessionData();
     setUser(null);
   };
 

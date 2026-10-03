@@ -119,6 +119,9 @@
     width: 100%;
     padding: 8px 12px;
     text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
 }
 
 .profile-popup-container{

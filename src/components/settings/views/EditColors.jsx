@@ -45,60 +45,47 @@ const EditColors = () => {
   };
 
   return (
-    <div className="profile-settings-input" style={{ flexDirection: "column", alignItems: "flex-start" }}>
-      <label style={{ marginBottom: 12 }}>Color Theme:</label>
-      
-      {/* Preset Color Grid */}
-      <div style={{ 
-        display: "grid", 
-        gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))", 
-        gap: "12px",
-        width: "100%",
-        maxWidth: "600px",
-        marginBottom: "16px"
-      }}>
+    <div className="profile-settings-input">
+      <span className="settings-field-label">Color theme</span>
+
+      <div className="theme-preset-grid">
         {presetColors.map((preset) => (
           <button
             key={preset.color}
+            type="button"
+            className={
+              accentColor === preset.color
+                ? "theme-preset-btn is-selected"
+                : "theme-preset-btn"
+            }
             onClick={() => handlePresetColorSelect(preset)}
             style={{
               backgroundColor: preset.color,
               color: preset.textColor,
-              border: accentColor === preset.color ? "3px solid white" : "1px solid rgba(255,255,255,0.3)",
-              borderRadius: "8px",
-              padding: "12px 8px",
-              cursor: "pointer",
-              fontSize: "12px",
-              fontWeight: "500",
-              transition: "all 0.2s",
-              boxShadow: accentColor === preset.color ? "0 4px 12px rgba(0,0,0,0.3)" : "none",
-              outline: "none",
-              userSelect: "none",
-              WebkitTapHighlightColor: "transparent",
             }}
-            onMouseDown={(e) => e.preventDefault()}
           >
             {preset.label}
           </button>
         ))}
       </div>
 
-      {/* Custom Color Pickers */}
-      <div style={{ display: "flex", gap: "24px", flexWrap: "wrap", marginTop: "8px" }}>
-        <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span>Accent Color:</span>
+      <div className="theme-color-row">
+        <label className="theme-color-field">
+          <span>Accent color</span>
           <input
             type="color"
             value={accentColor}
             onChange={handleAccentColorChange}
+            aria-label="Accent color"
           />
         </label>
-        <label style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span>Text Color:</span>
+        <label className="theme-color-field">
+          <span>Text color</span>
           <input
             type="color"
             value={primaryColor}
             onChange={handlePrimaryColorChange}
+            aria-label="Text color"
           />
         </label>
       </div>

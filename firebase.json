@@ -1,16 +1,13 @@
 {
-  "hosting": {
-    "public": "dist",
+  "apphosting": {
+    "backendId": "momentum",
+    "rootDir": "/",
     "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log",
+      "functions"
     ]
   }
 }

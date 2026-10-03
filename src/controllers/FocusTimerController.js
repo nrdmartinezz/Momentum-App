@@ -1,4 +1,4 @@
-import alarmSound from "../assets/sounds/notification-momentum.mp3";
+const alarmSound = "/sounds/notification-momentum.mp3";
 
 class FocusTimerController {
   constructor(workDuration, shortBreakDuration, longBreakDuration) {

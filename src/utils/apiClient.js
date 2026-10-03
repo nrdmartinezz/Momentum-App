@@ -1,11 +1,11 @@
-// Simple API client for Momentum React app
+// Simple API client for Momentum
 // - Reads JWT from localStorage (keys: 'authToken' or 'token')
 // - Adds Authorization: Bearer <token> to requests
-// - Uses Vite env var VITE_API_BASE_URL, defaults to production Cloud Run URL
+// - NEXT_PUBLIC_DEV selects the dev API URL; otherwise the prod URL is used
 
-export const API_BASE_URL = import.meta.env.VITE_DEV
-  ? import.meta.env.VITE_DEV_API_URL
-  : import.meta.env.VITE_PROD_API_URL;
+export const API_BASE_URL = process.env.NEXT_PUBLIC_DEV
+  ? process.env.NEXT_PUBLIC_DEV_API_URL
+  : process.env.NEXT_PUBLIC_PROD_API_URL;
 
 export const getToken = () =>
   localStorage.getItem("authToken") || localStorage.getItem("token") || null;
@@ -50,6 +50,36 @@ export async function apiPost(path, body, { headers = {}, signal } = {}) {
 
   if (!res.ok) {
     // Extract error message from response body
+    const errorMessage =
+      responseBody?.error ||
+      responseBody?.message ||
+      `Request failed: ${res.status}`;
+    throw new ApiError(errorMessage, {
+      status: res.status,
+      data: responseBody,
+    });
+  }
+  return responseBody;
+}
+
+export async function apiUpload(path, formData, { signal } = {}) {
+  const token = getToken();
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: formData,
+    signal,
+  });
+
+  const contentType = res.headers.get("content-type") || "";
+  const isJson = contentType.includes("application/json");
+  const responseBody = isJson
+    ? await res.json().catch(() => null)
+    : await res.text();
+
+  if (!res.ok) {
     const errorMessage =
       responseBody?.error ||
       responseBody?.message ||

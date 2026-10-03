@@ -65,6 +65,13 @@ const FocusTimer = () => {
     return () => timerController.pauseTimer();
   }, [isRunning, timerController, setTimeRemaining, setMode]);
 
+  useEffect(() => {
+    const minutes = Math.floor(timeRemaining / 60);
+    const secs = timeRemaining % 60;
+    const label = mode === "WORK" ? "Work" : "Break";
+    document.title = `${minutes}:${secs < 10 ? "0" : ""}${secs} - ${label}`;
+  }, [timeRemaining, mode]);
+
   if (isLoading) {
     return <TimerSkeleton />;
   }
@@ -116,10 +123,6 @@ const FocusTimer = () => {
     }
     return intervalDots;
   };
-
-  document.title = `${formatTime(timeRemaining)} - ${
-    mode === "WORK" ? "Work" : "Break"
-  }`;
 
   return (
     <div className="timer-container">

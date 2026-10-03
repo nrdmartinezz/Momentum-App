@@ -10,16 +10,17 @@ const EditSounds = () => {
 
   return (
     <div className="profile-settings-input">
-      <label>
-        Sound:
-        <input
-          type="text"
-          value={sound}
-          onChange={handleSoundChange}
-          placeholder="Enter sound URL"
-          style={{ marginLeft: 8, width: 250 }}
-        />
+      <label className="settings-field-label" htmlFor="theme-sound-url">
+        Sound
       </label>
+      <input
+        id="theme-sound-url"
+        type="text"
+        className="settings-text-input"
+        value={sound}
+        onChange={handleSoundChange}
+        placeholder="Enter sound URL"
+      />
     </div>
   );
 };

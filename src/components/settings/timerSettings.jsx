@@ -30,6 +30,7 @@ const TimerSettings = () => {
           <div className="duration-input-group">
              <span>min</span>
             <input
+              className="settings-number-input"
               type="number"
               value={Math.floor(workDuration / 60)}
               min={0}
@@ -45,6 +46,7 @@ const TimerSettings = () => {
           <div className="duration-input-group">
             <span>sec</span>
             <input
+              className="settings-number-input"
               type="number"
               value={workDuration % 60}
               min={0}
@@ -66,6 +68,7 @@ const TimerSettings = () => {
           <div className="duration-input-group">
             <span>min</span>
             <input
+              className="settings-number-input"
               type="number"
               value={Math.floor(shortBreakDuration / 60)}
               min={0}
@@ -81,6 +84,7 @@ const TimerSettings = () => {
           <div className="duration-input-group">
              <span>sec</span>
             <input
+              className="settings-number-input"
               type="number"
               value={shortBreakDuration % 60}
               min={0}
@@ -102,6 +106,7 @@ const TimerSettings = () => {
           <div className="duration-input-group">
             <span>min</span>
             <input
+              className="settings-number-input"
               type="number"
               value={Math.floor(longBreakDuration / 60)}
               min={0}
@@ -117,6 +122,7 @@ const TimerSettings = () => {
           <div className="duration-input-group">
             <span>sec</span>
             <input
+              className="settings-number-input"
               type="number"
               value={longBreakDuration % 60}
               min={0}

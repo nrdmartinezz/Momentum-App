@@ -1,6 +1,7 @@
 import EditBackground from "./views/EditBackground";
 import EditColors from "./views/EditColors";
 import EditSounds from "./views/EditSounds";
+import ThemeGallery from "./views/ThemeGallery";
 
 const ThemeSettings = () => {
 
@@ -11,6 +12,7 @@ const ThemeSettings = () => {
       <EditBackground />
       <EditColors />
       <EditSounds />
+      <ThemeGallery />
     </div>
   );
 };

@@ -1,14 +1,24 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
-import { apiPost, apiGet, getToken, apiDelete } from "../utils/apiClient";
+import { apiPost, getToken, apiDelete } from "../utils/apiClient";
+import { loadSessionData } from "../utils/sessionData";
 import { ProfileContext } from "./ProfileContext";
 
 export const TaskContext = createContext();
 
-export const TaskProvider = ({ children }) => {
-  const { isAuthenticated } = useContext(ProfileContext);
+const readStoredTasks = () => {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem("tasklist")) || [];
+  } catch {
+    return [];
+  }
+};
 
-  const [tasklist, setTasklist] = useState(JSON.parse(localStorage.getItem("tasklist")) || ([]));
+export const TaskProvider = ({ children }) => {
+  const { isAuthenticated, user } = useContext(ProfileContext);
+
+  const [tasklist, setTasklist] = useState(readStoredTasks);
   const [isLoading, setIsLoading] = useState(true);
   const [currentTask, setCurrentTask] = useState(null);
 
@@ -30,7 +40,7 @@ export const TaskProvider = ({ children }) => {
     if (token) {
       try { 
         const body = {
-          user_id: localStorage.getItem("user"),
+          user_id: user?.userId ?? null,
           title: task.name,
           description: task.description,
           due_date: task.dueDate,
@@ -75,37 +85,31 @@ const removeTask = (taskId) => {
   useEffect(() => {
     const loadTasks = async () => {
       setIsLoading(true);
-      const minDelay = new Promise(resolve => setTimeout(resolve, 800));
-      
+
       const token = getToken();
       if (!token) {
-        // Clear tasks when logged out
         setTasklist([]);
         localStorage.setItem("tasklist", JSON.stringify([]));
-        await minDelay;
         setIsLoading(false);
         return;
       }
 
       try {
-        const data = await apiGet("/tasks");
-        if (data?.tasks || Array.isArray(data)) {
-          const serverTasks = (data.tasks || data).map(task => ({
-            id: task.id,
-            name: task.title,
-            description: task.description || "",
-            status: task.status || "pending",
-            dueDate: task.due_date || task.dueDate,
-          }));
-          
-          setTasklist(organizeTasks(serverTasks));
-          localStorage.setItem("tasklist", JSON.stringify(serverTasks));
-        }
+        const data = await loadSessionData();
+        const serverTasks = (data?.tasks || []).map((task) => ({
+          id: task.id,
+          name: task.title,
+          description: task.description || "",
+          status: task.status || "pending",
+          dueDate: task.due_date || task.dueDate,
+        }));
+
+        setTasklist(organizeTasks(serverTasks));
+        localStorage.setItem("tasklist", JSON.stringify(serverTasks));
       } catch (error) {
         console.error("Failed to load tasks from API:", error);
       }
-      
-      await minDelay;
+
       setIsLoading(false);
     };
 

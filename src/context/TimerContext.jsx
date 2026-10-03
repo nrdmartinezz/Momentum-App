@@ -1,23 +1,28 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import PropTypes from "prop-types";
-import { apiGet, apiPost, getToken } from "../utils/apiClient";
+import { apiPost, getToken } from "../utils/apiClient";
+import { loadSessionData } from "../utils/sessionData";
 import { ProfileContext } from "./ProfileContext";
 
-const WDLS = localStorage.getItem("workDuration");
-const SBLS = localStorage.getItem("shortBreakDuration");
-const LBLS = localStorage.getItem("longBreakDuration");
+function secondsFromStoredMinutes(key, fallbackMinutes) {
+  if (typeof window === "undefined") return fallbackMinutes * 60;
+  const saved = localStorage.getItem(key);
+  return saved ? saved * 60 : fallbackMinutes * 60;
+}
 
 export const TimerContext = createContext();
 
 export const TimerProvider = ({ children }) => {
   const { isAuthenticated } = useContext(ProfileContext);
 
-  const [workDuration, setWorkDuration] = useState(WDLS ? WDLS * 60 : 25 * 60);
-  const [shortBreakDuration, setShortBreakDuration] = useState(
-    SBLS ? SBLS * 60 : 5 * 60
+  const [workDuration, setWorkDuration] = useState(() =>
+    secondsFromStoredMinutes("workDuration", 25)
   );
-  const [longBreakDuration, setLongBreakDuration] = useState(
-    LBLS ? LBLS * 60 : 15 * 60
+  const [shortBreakDuration, setShortBreakDuration] = useState(() =>
+    secondsFromStoredMinutes("shortBreakDuration", 5)
+  );
+  const [longBreakDuration, setLongBreakDuration] = useState(() =>
+    secondsFromStoredMinutes("longBreakDuration", 15)
   );
   const [timeRemaining, setTimeRemaining] = useState(workDuration);
   const [mode, setMode] = useState("WORK");
@@ -28,35 +33,29 @@ export const TimerProvider = ({ children }) => {
     const loadUserSettings = async () => {
       const token = getToken();
       if (!token) {
-        // Reset to defaults when logged out
         const defaultWork = 25 * 60;
         const defaultShort = 5 * 60;
         const defaultLong = 15 * 60;
-        
+
         setWorkDuration(defaultWork);
         setShortBreakDuration(defaultShort);
         setLongBreakDuration(defaultLong);
-        
+
         localStorage.setItem("workDuration", "25");
         localStorage.setItem("shortBreakDuration", "5");
         localStorage.setItem("longBreakDuration", "15");
-        
-        // Minimum delay to show loading state
-        await new Promise(resolve => setTimeout(resolve, 800));
+
         setIsLoading(false);
         return;
       }
 
       setIsLoading(true);
-      
-      // Start minimum delay timer
-      const minDelay = new Promise(resolve => setTimeout(resolve, 1000));
 
       try {
-        const data = await apiGet("/users/get_user_settings");
-        
+        const session = await loadSessionData();
+        const data = session?.settings;
+
         if (data) {
-          // API returns: pomodoro_duration, short_break_duration, long_break_duration (in seconds)
           const pomoSeconds = data.pomodoro_duration ?? data.workDuration;
           const shortSeconds = data.short_break_duration ?? data.shortBreakDuration;
           const longSeconds = data.long_break_duration ?? data.longBreakDuration;
@@ -80,8 +79,6 @@ export const TimerProvider = ({ children }) => {
       } catch (error) {
         console.error("Failed to load user settings:", error);
       } finally {
-        // Wait for minimum delay before hiding loading state
-        await minDelay;
         setIsLoading(false);
       }
     };
