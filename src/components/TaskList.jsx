@@ -31,8 +31,18 @@ const TaskList = ({ onTaskListToggle }) => {
         <div
           onClick={ToggleTaskList}
           className={"toggle-task-list " + (isVisible ? "rotate-icon" : "")}
+          role="button"
+          aria-label={
+            tasklist.length > 0
+              ? `Tasks, ${tasklist.length} saved`
+              : "Tasks"
+          }
         >
           <FontAwesomeIcon icon={faCaretLeft} />
+          <span className="toggle-task-label">Tasks</span>
+          {tasklist.length > 0 ? (
+            <span className="toggle-task-count">{tasklist.length}</span>
+          ) : null}
         </div>
         <div className={"task-list-container adrianna-regular"}>
           <div className="task-list-header">

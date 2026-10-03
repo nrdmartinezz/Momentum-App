@@ -6,6 +6,7 @@ import { ProfileProvider } from "../context/ProfileContext";
 import { ThemeProvider } from "../context/ThemeContext";
 import { TimerProvider } from "../context/TimerContext";
 import { TaskProvider } from "../context/TaskContext";
+import { ClockProvider } from "../context/ClockContext";
 
 export default function Providers({ children }) {
   const [mounted, setMounted] = useState(false);
@@ -22,7 +23,9 @@ export default function Providers({ children }) {
     <ProfileProvider>
       <ThemeProvider>
         <TimerProvider>
-          <TaskProvider>{children}</TaskProvider>
+          <TaskProvider>
+            <ClockProvider>{children}</ClockProvider>
+          </TaskProvider>
         </TimerProvider>
       </ThemeProvider>
     </ProfileProvider>

@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { TimerContext } from "../../context/TimerContext";
+import { ClockContext } from "../../context/ClockContext";
 
 const TimerSettings = () => {
   const {
@@ -12,6 +13,7 @@ const TimerSettings = () => {
     setTimeRemaining,
     mode,
   } = useContext(TimerContext);
+  const { hour12, dateFormat, setHour12, setDateFormat } = useContext(ClockContext);
 
   const handleDurationChange = (totalSeconds, setter, modeCheck) => {
     setter(totalSeconds);
@@ -22,8 +24,57 @@ const TimerSettings = () => {
 
   return (
     <div className="timer-settings-container adrianna-regular">
-      <h2 className="app-settings-view-title">Timer Settings</h2>
-      
+      <h2 className="app-settings-view-title">Time and Clock</h2>
+
+      <div className="timer-settings-input">
+        <label className="settings-field-label">Clock</label>
+        <div className="settings-option-row" role="group" aria-label="Clock">
+          <button
+            type="button"
+            className={hour12 ? "settings-option is-selected" : "settings-option"}
+            onClick={() => setHour12(true)}
+          >
+            12-hour
+          </button>
+          <button
+            type="button"
+            className={!hour12 ? "settings-option is-selected" : "settings-option"}
+            onClick={() => setHour12(false)}
+          >
+            24-hour
+          </button>
+        </div>
+      </div>
+
+      <div className="timer-settings-input">
+        <label className="settings-field-label">Format</label>
+        <div className="settings-option-row" role="group" aria-label="Format">
+          <button
+            type="button"
+            className={dateFormat === "weekday" ? "settings-option is-selected" : "settings-option"}
+            onClick={() => setDateFormat("weekday")}
+          >
+            Weekday
+          </button>
+          <button
+            type="button"
+            className={dateFormat === "monthDay" ? "settings-option is-selected" : "settings-option"}
+            onClick={() => setDateFormat("monthDay")}
+          >
+            Month and day
+          </button>
+          <button
+            type="button"
+            className={dateFormat === "numeric" ? "settings-option is-selected" : "settings-option"}
+            onClick={() => setDateFormat("numeric")}
+          >
+            Numeric
+          </button>
+        </div>
+      </div>
+
+      <h3 className="settings-subsection-title">Focus timer</h3>
+
       <div className="timer-settings-input">
         <label>Work Duration:</label>
         <div className="duration-inputs">

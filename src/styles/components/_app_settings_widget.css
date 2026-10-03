@@ -157,6 +157,37 @@
   margin-bottom: 24px;
 }
 
+.settings-subsection-title {
+  margin: 8px 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.settings-option-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 100%;
+}
+
+.settings-option {
+  flex: 1 1 auto;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--global-color-white);
+  padding: 8px 12px;
+  font-family: "adrianna", sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.settings-option.is-selected {
+  background: var(--global-color-accent);
+  border-color: var(--global-color-accent);
+}
+
 .app-settings-view .profile-settings-container,
 .app-settings-view .profile-settings-input,
 .app-settings-view .timer-settings-container {

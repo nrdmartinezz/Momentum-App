@@ -33,7 +33,7 @@ const AppSettingsWidget = ({ isTaskListOpen }) => {
             handleViewChange("timer");
           }}
         >
-          Timer
+          Timer / Clock
         </div>
         <div
           className={

@@ -1,0 +1,62 @@
+# Push to main deploys the Next.js app with Firebase App Hosting.
+#
+# One-time setup in Google Cloud project momentum-pmdr:
+# 1. Create a service account (for example, github-deploy).
+# 2. Grant it Firebase Admin, Firebase App Hosting Admin, Cloud Build Editor,
+#    Artifact Registry Writer, Storage Admin, and Service Account User.
+# 3. Create a JSON key and add it as the FIREBASE_SERVICE_ACCOUNT secret
+#    on this GitHub repository (Settings → Secrets and variables → Actions).
+
+name: Deploy web app
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-web
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+
+      - name: Create App Hosting backend if needed
+        run: |
+          if ! npx -y firebase-tools@latest apphosting:backends:get momentum --project momentum-pmdr --non-interactive; then
+            npx -y firebase-tools@latest apphosting:backends:create \
+              --non-interactive \
+              --project momentum-pmdr \
+              --backend momentum \
+              --primary-region us-central1 \
+              --root-dir / \
+              --runtime nodejs22
+          fi
+
+      - name: Deploy App Hosting
+        run: npx -y firebase-tools@latest deploy --only apphosting --project momentum-pmdr --non-interactive
