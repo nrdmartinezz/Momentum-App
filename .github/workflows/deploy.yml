@@ -3,9 +3,11 @@
 # One-time setup in Google Cloud project momentum-pmdr:
 # 1. Create a service account (for example, github-deploy).
 # 2. Grant it Firebase Admin, Firebase App Hosting Admin, Cloud Build Editor,
-#    Artifact Registry Writer, Storage Admin, and Service Account User.
+#    Artifact Registry Writer, Storage Admin, Service Account User, and
+#    Service Account Token Creator (on this service account itself).
 # 3. Create a JSON key and add it as the FIREBASE_SERVICE_ACCOUNT secret
-#    on this GitHub repository (Settings → Secrets and variables → Actions).
+#    on this GitHub repository (Settings → Secrets and variables → Actions
+#    → Repository secrets).
 
 name: Deploy web app
 
@@ -42,11 +44,17 @@ jobs:
         run: npm run lint
 
       - name: Authenticate to Google Cloud
+        id: auth
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          project_id: momentum-pmdr
+          token_format: access_token
 
       - name: Create App Hosting backend if needed
+        env:
+          FIREBASE_TOKEN: ${{ steps.auth.outputs.access_token }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
         run: |
           if ! npx -y firebase-tools@latest apphosting:backends:get momentum --project momentum-pmdr --non-interactive; then
             npx -y firebase-tools@latest apphosting:backends:create \
@@ -59,4 +67,7 @@ jobs:
           fi
 
       - name: Deploy App Hosting
+        env:
+          FIREBASE_TOKEN: ${{ steps.auth.outputs.access_token }}
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
         run: npx -y firebase-tools@latest deploy --only apphosting --project momentum-pmdr --non-interactive
